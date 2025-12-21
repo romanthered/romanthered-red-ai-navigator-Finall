@@ -1,5 +1,5 @@
 import { SYSTEM_PROMPT } from '@/lib/systemPrompt';
-import Anthropic from '@anthropic-ai/sdk';
+import { Anthropic } from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     };
 
     // Call Claude API with full system prompt
-    const response = await anthropic.messages.create({
+const response = await client.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 2000,
       system: SYSTEM_PROMPT,
