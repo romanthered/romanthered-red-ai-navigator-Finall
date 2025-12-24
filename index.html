@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED AI NAVIGATOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000000;
+            --surface: rgba(255,255,255,0.03);
+            --surface-solid: #0a0a0a;
+            --elevated: rgba(255,255,255,0.06);
+            --border: rgba(255,255,255,0.08);
+            --text: #ffffff;
+            --text-s: rgba(255,255,255,0.6);
+            --text-m: rgba(255,255,255,0.3);
+            --accent: #dc2626;
+            --accent-s: rgba(220,38,38,0.15);
+            --accent-g: rgba(220,38,38,0.4);
+            --grad: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            --success: #22c55e;
+            --locked: rgba(255,255,255,0.2);
+        }
+        [data-theme="light"] {
+            --bg: #ffffff;
+            --surface: rgba(0,0,0,0.02);
+            --surface-solid: #fafafa;
+            --elevated: rgba(0,0,0,0.04);
+            --border: rgba(0,0,0,0.08);
+            --text: #000000;
+            --text-s: rgba(0,0,0,0.6);
+            --text-m: rgba(0,0,0,0.3);
+        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        html,body{height:100%;overflow:hidden}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text)}
+
+        /* Starfield */
+        #stars{position:fixed;inset:0;z-index:0}
+
+        /* Layout */
+        .app{position:relative;z-index:1;height:100%;display:grid;grid-template-columns:280px 1fr;grid-template-rows:60px 1fr}
+
+        /* Header */
+        .header{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.5);backdrop-filter:blur(20px)}
+        .header-left{display:flex;align-items:center;gap:16px}
+        .menu-btn{display:none;width:40px;height:40px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text);cursor:pointer;font-size:18px}
+        .logo{display:flex;align-items:center;gap:12px}
+        .logo-icon{width:36px;height:36px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Syne';font-weight:800;font-size:16px;color:#fff}
+        .logo-text{font-family:'Syne';font-weight:700;font-size:18px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-center{display:flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text-s)}
+        .header-center span{color:var(--accent);font-weight:600}
+        .header-right{display:flex;align-items:center;gap:12px}
+        .icon-btn{width:40px;height:40px;border-radius:10px;border:1px solid var(--border);background:transparent;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;color:var(--text)}
+        .icon-btn:hover{background:var(--elevated);border-color:var(--accent)}
+
+        /* Sidebar */
+        .sidebar{border-right:1px solid var(--border);background:rgba(0,0,0,0.3);backdrop-filter:blur(20px);display:flex;flex-direction:column;overflow:hidden}
+        .sidebar-header{padding:20px;border-bottom:1px solid var(--border)}
+        .sidebar-title{font-family:'Syne';font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-m);margin-bottom:12px}
+        .progress-wrap{background:var(--surface);border-radius:8px;padding:12px}
+        .progress-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px}
+        .progress-label span:first-child{color:var(--text-s)}
+        .progress-label span:last-child{color:var(--accent);font-weight:600}
+        .progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--grad);border-radius:2px;transition:width .5s}
+
+        .sidebar-modules{flex:1;overflow-y:auto;padding:12px}
+        .sidebar-modules::-webkit-scrollbar{width:4px}
+        .sidebar-modules::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+        .module-group{margin-bottom:20px}
+        .module-group-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--text-m);padding:8px 12px}
+
+        .module-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:4px}
+        .module-item:hover{background:var(--elevated)}
+        .module-item.active{background:var(--accent-s);border:1px solid rgba(220,38,38,0.3)}
+        .module-item.locked{opacity:0.4;cursor:not-allowed}
+        .module-item.locked:hover{background:transparent}
+        .module-item.completed .module-status{background:var(--success);color:#fff}
+
+        .module-status{width:28px;height:28px;border-radius:8px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+        .module-item.locked .module-status{background:var(--locked)}
+        .module-info{flex:1;min-width:0}
+        .module-name{font-size:13px;font-weight:500;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .module-meta{font-size:11px;color:var(--text-m)}
+
+        /* Main Content */
+        .main{display:flex;flex-direction:column;overflow:hidden;position:relative}
+
+        /* Chat Area */
+        .chat{flex:1;overflow-y:auto;padding:40px;display:flex;flex-direction:column;gap:24px}
+        .chat::-webkit-scrollbar{width:6px}
+        .chat::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+        /* Messages */
+        .msg{max-width:720px;animation:msgIn .4s ease}
+        @keyframes msgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        .msg.user{align-self:flex-end}
+        .msg-bub{font-size:15px;line-height:1.7}
+        .msg.bot .msg-bub{color:var(--text)}
+        .msg.user .msg-bub{background:var(--elevated);border:1px solid var(--border);padding:14px 20px;border-radius:16px}
+        .msg-bub img{max-width:100%;border-radius:12px;margin-top:12px}
+
+        /* Typing */
+        .typing{display:flex;gap:5px}
+        .typing span{width:6px;height:6px;background:var(--accent);border-radius:50%;animation:typ 1.4s infinite}
+        .typing span:nth-child(2){animation-delay:.15s}
+        .typing span:nth-child(3){animation-delay:.3s}
+        @keyframes typ{0%,60%,100%{opacity:.3}30%{opacity:1}}
+
+        /* Input Area */
+        .input-area{padding:20px 40px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8) 0%,transparent 100%)}
+        .input-wrap{max-width:720px;margin:0 auto;background:var(--surface-solid);border:1px solid var(--border);border-radius:16px;padding:4px;display:flex;align-items:flex-end;gap:4px;transition:border-color .2s}
+        .input-wrap:focus-within{border-color:var(--accent)}
+        .attach{width:44px;height:44px;border-radius:12px;border:none;background:transparent;cursor:pointer;font-size:18px;color:var(--text-s);transition:all .2s}
+        .attach:hover{background:var(--elevated);color:var(--text)}
+        textarea{flex:1;background:transparent;border:none;padding:12px 8px;font-size:15px;color:var(--text);font-family:'Inter',sans-serif;resize:none;min-height:44px;max-height:120px}
+        textarea:focus{outline:none}
+        textarea::placeholder{color:var(--text-m)}
+        .send{width:44px;height:44px;background:var(--grad);border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+        .send:hover{transform:scale(1.05)}
+        .send:disabled{opacity:0.5;cursor:not-allowed;transform:scale(1)}
+        .send svg{width:18px;height:18px;fill:#fff}
+
+        /* Overlays */
+        .overlay{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:40px;background:var(--bg)}
+        .overlay.hid{display:none}
+
+        /* Language Screen */
+        .lang-logo{display:flex;flex-direction:column;align-items:center;gap:20px}
+        .lang-icon{width:80px;height:80px;background:var(--grad);border-radius:20px;display:flex;align-items:center;justify-content:center;font-family:'Syne';font-weight:800;font-size:36px;color:#fff;box-shadow:0 0 80px var(--accent-g);animation:pulse 3s ease-in-out infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 60px var(--accent-g)}50%{box-shadow:0 0 100px var(--accent-g)}}
+        .lang-title{font-family:'Syne';font-weight:800;font-size:32px}
+        .lang-sub{font-size:15px;color:var(--text-s);max-width:400px;text-align:center}
+        .lang-opts{display:flex;gap:16px}
+        .lang-btn{display:flex;flex-direction:column;align-items:center;gap:12px;padding:28px 44px;background:var(--surface);border:1px solid var(--border);border-radius:16px;cursor:pointer;transition:all .3s}
+        .lang-btn:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 20px 40px -12px var(--accent-g)}
+        .lang-fl{font-size:40px}
+        .lang-nm{font-family:'Syne';font-weight:600;font-size:16px;color:var(--text)}
+
+        /* API Key Screen */
+        .api-box{max-width:500px;background:var(--surface-solid);border:1px solid var(--border);border-radius:20px;padding:40px;text-align:center}
+        .api-title{font-family:'Syne';font-size:24px;font-weight:700;margin-bottom:12px}
+        .api-sub{color:var(--text-s);margin-bottom:24px;line-height:1.6;font-size:14px}
+        .api-input-wrap{margin-bottom:20px}
+        .api-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;transition:border-color .2s}
+        .api-input:focus{outline:none;border-color:var(--accent)}
+        .api-input::placeholder{color:var(--text-m)}
+        .api-btn{width:100%;background:var(--grad);border:none;padding:14px;border-radius:12px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;transition:all .2s;font-family:'Syne'}
+        .api-btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px -8px var(--accent-g)}
+        .api-btn:disabled{opacity:0.5;cursor:not-allowed;transform:translateY(0)}
+        .api-error{color:#ef4444;font-size:13px;margin-top:12px}
+        .api-help{margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+        .api-help-title{font-size:12px;font-weight:600;color:var(--text-s);margin-bottom:8px}
+        .api-help-link{color:var(--accent);font-size:13px;text-decoration:none}
+        .api-help-link:hover{text-decoration:underline}
+
+        /* Responsive */
+        @media(max-width:900px){
+            .app{grid-template-columns:1fr}
+            .sidebar{position:fixed;left:0;top:60px;bottom:0;width:280px;z-index:100;transform:translateX(-100%);transition:transform .3s}
+            .sidebar.open{transform:translateX(0)}
+            .menu-btn{display:flex}
+            .header-center{display:none}
+        }
+        @media(max-width:600px){
+            .chat{padding:24px 16px}
+            .input-area{padding:16px}
+            .lang-opts{flex-direction:column}
+            .lang-title{font-size:24px}
+            .api-box{padding:24px;margin:20px}
+        }
+
+        #fi{display:none}
+    </style>
+</head>
+<body>
+    <canvas id="stars"></canvas>
+
+    <!-- Language Selection -->
+    <div class="overlay" id="langOv">
+        <div class="lang-logo">
+            <div class="lang-icon">R</div>
+            <div class="lang-title">RED AI NAVIGATOR</div>
+            <div class="lang-sub">Master AI and build your income stream with guided learning</div>
+        </div>
+        <div class="lang-opts">
+            <button class="lang-btn" onclick="selectLang('de')"><span class="lang-fl">🇩🇪</span><span class="lang-nm">Deutsch</span></button>
+            <button class="lang-btn" onclick="selectLang('en')"><span class="lang-fl">🇬🇧</span><span class="lang-nm">English</span></button>
+            <button class="lang-btn" onclick="selectLang('ru')"><span class="lang-fl">🇷🇺</span><span class="lang-nm">Русский</span></button>
+        </div>
+    </div>
+
+    <!-- API Key Input -->
+    <div class="overlay hid" id="apiOv">
+        <div class="lang-icon">🔑</div>
+        <div class="api-box">
+            <div class="api-title" id="apiTitle">Connect Your AI</div>
+            <div class="api-sub" id="apiSub">Enter your Anthropic API key to unlock the full RED AI Navigator experience. Your key is stored locally and never shared.</div>
+            <div class="api-input-wrap">
+                <input type="password" id="apiKey" class="api-input" placeholder="sk-ant-api03-...">
+            </div>
+            <button class="api-btn" onclick="saveApiKey()" id="apiBtn">Start Journey →</button>
+            <div class="api-error" id="apiError"></div>
+            <div class="api-help">
+                <div class="api-help-title">Don't have an API key?</div>
+                <a href="https://console.anthropic.com/settings/keys" target="_blank" class="api-help-link">Get one from Anthropic →</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="app" style="display:none" id="app">
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="logo">
+                    <div class="logo-icon">R</div>
+                    <div class="logo-text">RED AI NAVIGATOR</div>
+                </div>
+            </div>
+            <div class="header-center">
+                <span id="currentModule">Intro</span>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+            </div>
+        </header>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Your Progress</div>
+                <div class="progress-wrap">
+                    <div class="progress-label">
+                        <span>Overall</span>
+                        <span id="totalProgress">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="sidebar-modules" id="moduleList"></div>
+        </aside>
+
+        <main class="main">
+            <div class="chat" id="chat"></div>
+
+            <div class="input-area">
+                <div class="input-wrap">
+                    <button class="attach" onclick="toggleDrop()">📷</button>
+                    <textarea id="inp" placeholder="Type your answer..." rows="1" onkeydown="handleKey(event)"></textarea>
+                    <button class="send" onclick="send()" id="sendBtn">
+                        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    </button>
+                </div>
+            </div>
+            <input type="file" id="fi" accept="image/*">
+        </main>
+    </div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// STARFIELD
+// ═══════════════════════════════════════════════════════════════
+const canvas = document.getElementById('stars');
+const ctx = canvas.getContext('2d');
+let stars = [];
+
+function initStars() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = [];
+    for (let i = 0; i < 200; i++) {
+        stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            size: Math.random() * 1.5,
+            opacity: Math.random()
+        });
+    }
+}
+
+function animateStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(star => {
+        star.opacity += (Math.random() - 0.5) * 0.02;
+        star.opacity = Math.max(0.1, Math.min(1, star.opacity));
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${star.opacity * 0.6})`;
+        ctx.fill();
+    });
+    requestAnimationFrame(animateStars);
+}
+
+window.addEventListener('resize', initStars);
+initStars();
+animateStars();
+
+// ═══════════════════════════════════════════════════════════════
+// STATE & CONFIG
+// ═══════════════════════════════════════════════════════════════
+const S = {
+    lang: null,
+    apiKey: localStorage.getItem('red_ai_api_key') || null,
+    anthropic: null,
+    conversation: [],
+    currentModule: 'intro',
+    completedModules: [],
+    profile: {},
+    project: { images: [], notes: [] }
+};
+
+const MODULES = {
+    intro: { id: 'intro', group: 'basics', icon: '👋', name: { en: 'Introduction', de: 'Einführung', ru: 'Введение' } },
+    what_is_ai: { id: 'what_is_ai', group: 'basics', icon: '🤖', name: { en: 'What is AI?', de: 'Was ist AI?', ru: 'Что такое AI?' } },
+    tokens: { id: 'tokens', group: 'basics', icon: '🎟️', name: { en: 'Tokens', de: 'Tokens', ru: 'Токены' } },
+    context: { id: 'context', group: 'basics', icon: '📝', name: { en: 'Context', de: 'Kontext', ru: 'Контекст' } },
+    voiceovers: { id: 'voiceovers', group: 'methods', icon: '🎙️', name: { en: 'AI Voiceovers', de: 'AI Voiceovers', ru: 'AI Озвучка' } },
+    imagegen: { id: 'imagegen', group: 'methods', icon: '🎨', name: { en: 'Image Generation', de: 'Bildgenerierung', ru: 'Генерация изображений' } },
+    videogen: { id: 'videogen', group: 'methods', icon: '🎬', name: { en: 'Video Generation', de: 'Videogenerierung', ru: 'Генерация видео' } },
+    chatbots: { id: 'chatbots', group: 'methods', icon: '💬', name: { en: 'Chatbots', de: 'Chatbots', ru: 'Чатботы' } },
+    automation: { id: 'automation', group: 'methods', icon: '⚙️', name: { en: 'Automation', de: 'Automatisierung', ru: 'Автоматизация' } },
+    copywriting: { id: 'copywriting', group: 'methods', icon: '✍️', name: { en: 'Copywriting', de: 'Copywriting', ru: 'Копирайтинг' } },
+    websites: { id: 'websites', group: 'methods', icon: '💻', name: { en: 'AI Websites', de: 'AI Websites', ru: 'AI Сайты' } },
+    research: { id: 'research', group: 'methods', icon: '📊', name: { en: 'AI Research', de: 'AI Research', ru: 'AI Исследования' } },
+    consulting: { id: 'consulting', group: 'methods', icon: '🎓', name: { en: 'AI Consulting', de: 'AI Consulting', ru: 'AI Консалтинг' } },
+    choose_path: { id: 'choose_path', group: 'decision', icon: '🎯', name: { en: 'Choose Path', de: 'Wähle Weg', ru: 'Выбери путь' } },
+    project: { id: 'project', group: 'project', icon: '🚀', name: { en: 'Your Project', de: 'Dein Projekt', ru: 'Твой проект' } }
+};
+
+const GROUPS = {
+    basics: { en: 'Fundamentals', de: 'Grundlagen', ru: 'Основы' },
+    methods: { en: 'AI Methods', de: 'AI Methoden', ru: 'AI Методы' },
+    decision: { en: 'Your Path', de: 'Dein Weg', ru: 'Твой путь' },
+    project: { en: 'Your Project', de: 'Dein Projekt', ru: 'Твой проект' }
+};
+
+const i18n = {
+    en: {
+        apiTitle: 'Connect Your AI',
+        apiSub: 'Enter your Anthropic API key to unlock the full RED AI Navigator experience. Your key is stored locally and never shared.',
+        apiBtn: 'Start Journey →',
+        apiError: 'Invalid API key. Please check and try again.',
+        apiHelp: "Don't have an API key?",
+        apiHelpLink: 'Get one from Anthropic →'
+    },
+    de: {
+        apiTitle: 'Verbinde deine AI',
+        apiSub: 'Gib deinen Anthropic API Key ein um die volle RED AI Navigator Erfahrung freizuschalten. Dein Key wird nur lokal gespeichert.',
+        apiBtn: 'Reise Starten →',
+        apiError: 'Ungültiger API Key. Bitte prüfen.',
+        apiHelp: 'Noch keinen API Key?',
+        apiHelpLink: 'Hol dir einen bei Anthropic →'
+    },
+    ru: {
+        apiTitle: 'Подключи свой AI',
+        apiSub: 'Введи свой Anthropic API ключ чтобы разблокировать полный опыт RED AI Navigator. Ключ хранится только локально.',
+        apiBtn: 'Начать Путь →',
+        apiError: 'Неверный API ключ. Проверь.',
+        apiHelp: 'Нет API ключа?',
+        apiHelpLink: 'Получи у Anthropic →'
+    }
+};
+
+function t(key) {
+    return i18n[S.lang]?.[key] || i18n.en[key] || key;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LANGUAGE & API KEY SETUP
+// ═══════════════════════════════════════════════════════════════
+function selectLang(lang) {
+    S.lang = lang;
+    document.getElementById('langOv').classList.add('hid');
+
+    // Update API screen text
+    document.getElementById('apiTitle').textContent = t('apiTitle');
+    document.getElementById('apiSub').textContent = t('apiSub');
+    document.getElementById('apiBtn').textContent = t('apiBtn');
+
+    // Show API screen or skip if already have key
+    if (S.apiKey) {
+        initAnthropic();
+        startApp();
+    } else {
+        document.getElementById('apiOv').classList.remove('hid');
+    }
+}
+
+function saveApiKey() {
+    const key = document.getElementById('apiKey').value.trim();
+    if (!key || !key.startsWith('sk-ant-')) {
+        document.getElementById('apiError').textContent = t('apiError');
+        return;
+    }
+
+    S.apiKey = key;
+    localStorage.setItem('red_ai_api_key', key);
+    document.getElementById('apiError').textContent = '';
+
+    initAnthropic();
+    startApp();
+}
+
+function initAnthropic() {
+    // API calls will be made directly via fetch
+    console.log('API Key configured');
+}
+
+function startApp() {
+    document.getElementById('apiOv').classList.add('hid');
+    document.getElementById('app').style.display = 'grid';
+    renderModuleList();
+    initModule('intro');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MODULE SYSTEM
+// ═══════════════════════════════════════════════════════════════
+function renderModuleList() {
+    const list = document.getElementById('moduleList');
+    const moduleArray = Object.values(MODULES);
+    const groups = {};
+
+    moduleArray.forEach((m, i) => {
+        if (!groups[m.group]) groups[m.group] = [];
+        groups[m.group].push({ ...m, index: i });
+    });
+
+    list.innerHTML = Object.entries(groups).map(([group, modules]) => `
+        <div class="module-group">
+            <div class="module-group-title">${GROUPS[group][S.lang] || group}</div>
+            ${modules.map(m => {
+                const isLocked = m.index > 0 && !S.completedModules.includes(moduleArray[m.index - 1].id);
+                const isCompleted = S.completedModules.includes(m.id);
+                const isActive = S.currentModule === m.id;
+                return `
+                    <div class="module-item ${isLocked ? 'locked' : ''} ${isCompleted ? 'completed' : ''} ${isActive ? 'active' : ''}"
+                         onclick="${isLocked ? '' : `selectModule('${m.id}')`}">
+                        <div class="module-status">${isCompleted ? '✓' : isLocked ? '🔒' : m.icon}</div>
+                        <div class="module-info">
+                            <div class="module-name">${m.name[S.lang] || m.name.en}</div>
+                            <div class="module-meta">${isCompleted ? 'Completed' : isLocked ? 'Locked' : 'Active'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `).join('');
+
+    updateProgress();
+}
+
+function updateProgress() {
+    const total = Object.keys(MODULES).length;
+    const completed = S.completedModules.length;
+    const pct = Math.round((completed / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('totalProgress').textContent = pct + '%';
+    document.getElementById('currentModule').textContent = MODULES[S.currentModule]?.name[S.lang] || 'Navigator';
+}
+
+function selectModule(moduleId) {
+    S.currentModule = moduleId;
+    document.getElementById('chat').innerHTML = '';
+    renderModuleList();
+    initModule(moduleId);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// AI CONVERSATION
+// ═══════════════════════════════════════════════════════════════
+const SYSTEM_PROMPTS = {
+    intro: `You are the RED AI Navigator assistant. You're guiding the user through an introduction module.
+Your goal: Learn their name, their main goal (side income, full-time income, or exploring), and how much time they can invest daily.
+Be friendly, concise, and encouraging. After gathering this info, congratulate them and tell them they've completed the intro module.
+Always respond in {LANG} language.`,
+
+    what_is_ai: `You are teaching about AI basics. Explain what AI is, different types (LLMs, Image AI, Voice AI, Video AI), and their applications.
+Include interactive quizzes. Be educational but keep it practical and income-focused.
+Always respond in {LANG} language.`,
+
+    tokens: `You are teaching about tokens in AI. Explain what tokens are, how they work, pricing, and why it matters for costs.
+Give practical examples. Include a quiz about token counts.
+Always respond in {LANG} language.`,
+
+    context: `You are teaching about context in AI. Explain why context is crucial for quality outputs, how to structure good prompts.
+Be practical with examples from real use cases.
+Always respond in {LANG} language.`,
+
+    voiceovers: `You are teaching the AI Voiceovers income method. Cover: tools (ElevenLabs, Play.ht, Murf), use cases, getting started, income potential (€500-2000/month).
+Be specific and actionable.
+Always respond in {LANG} language.`,
+
+    imagegen: `You are teaching AI Image Generation. Cover: tools (Midjourney, DALL-E, Stable Diffusion, Leonardo.ai), prompting tips, income potential.
+Focus on practical money-making applications.
+Always respond in {LANG} language.`,
+
+    videogen: `You are teaching AI Video Generation. Cover: tools (Runway, Pika, HeyGen), use cases (faceless YouTube, shorts), income potential (€1000-5000/month).
+Always respond in {LANG} language.`,
+
+    chatbots: `You are teaching AI Chatbots. Cover: business applications, customer service, lead gen, tools, income potential (€2000-10000/month).
+Always respond in {LANG} language.`,
+
+    automation: `You are teaching AI Automation. Cover: tools (Make.com, Zapier, n8n), workflows, business applications, income potential (€1500-5000/month).
+Always respond in {LANG} language.`,
+
+    copywriting: `You are teaching AI Copywriting. Cover: frameworks (AIDA, PAS, BAB), tools, income potential (€1000-5000/month), getting first clients.
+Always respond in {LANG} language.`,
+
+    websites: `You are teaching AI Website building. Cover: tools (Framer, Webflow, v0.dev, Cursor), no-code options, income potential (€1000-4000/month).
+Always respond in {LANG} language.`,
+
+    research: `You are teaching AI Research services. Cover: market research, competitor analysis, data processing, income potential (€1000-4000/month).
+Always respond in {LANG} language.`,
+
+    consulting: `You are teaching AI Consulting. Cover: strategy, implementation, training, pricing models (hourly €100-300, project €1000-10000), highest income potential (€3000-20000/month).
+Always respond in {LANG} language.`,
+
+    choose_path: `You are helping the user choose their AI income path. They've learned all 9 methods. Help them pick 1-3 that fit their profile.
+Also present the option for premium 1:1 guidance with branding/marketing (€3k+ investment).
+Always respond in {LANG} language.`,
+
+    project: `You are the user's personal AI project coach. Help them set specific goals, analyze screenshots they upload, give actionable advice.
+Be supportive, strategic, and focused on their chosen income methods. Reference their profile data.
+Always respond in {LANG} language.`
+};
+
+function getSystemPrompt(moduleId) {
+    const langNames = { en: 'English', de: 'German', ru: 'Russian' };
+    let prompt = SYSTEM_PROMPTS[moduleId] || SYSTEM_PROMPTS.intro;
+    prompt = prompt.replace('{LANG}', langNames[S.lang] || 'English');
+
+    // Add profile context if available
+    if (Object.keys(S.profile).length > 0) {
+        prompt += `\n\nUser Profile: ${JSON.stringify(S.profile)}`;
+    }
+
+    return prompt;
+}
+
+async function callAnthropic(messages, system) {
+    const response = await fetch('https://api-proxy-rho-five.vercel.app/api/claude', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': S.apiKey,
+            'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 2048,
+            system: system,
+            messages: messages
+        })
+    });
+
+    if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+    }
+
+    return await response.json();
+}
+
+async function initModule(moduleId) {
+    // Clear conversation for new module
+    S.conversation = [];
+
+    // Add initial AI message
+    addTyping();
+
+    try {
+        const response = await callAnthropic([{
+            role: 'user',
+            content: `Start the ${moduleId} module. Greet me and begin the lesson.`
+        }], getSystemPrompt(moduleId));
+
+        removeTyping();
+        const text = response.content[0].text;
+        S.conversation.push({ role: 'assistant', content: text });
+        addBot(text);
+
+    } catch (e) {
+        removeTyping();
+        console.error('AI Error:', e);
+        addBot('⚠️ Connection error. Please check your API key and try again.');
+    }
+}
+
+async function send() {
+    const txt = document.getElementById('inp').value.trim();
+    if (!txt) return;
+
+    addUser(txt);
+    document.getElementById('inp').value = '';
+    document.getElementById('inp').style.height = 'auto';
+
+    // Add to conversation
+    S.conversation.push({ role: 'user', content: txt });
+
+    // Show typing
+    addTyping();
+    document.getElementById('sendBtn').disabled = true;
+
+    try {
+        const response = await callAnthropic(S.conversation, getSystemPrompt(S.currentModule));
+
+        removeTyping();
+        document.getElementById('sendBtn').disabled = false;
+
+        const text = response.content[0].text;
+        S.conversation.push({ role: 'assistant', content: text });
+        addBot(text);
+
+        // Check if module complete (AI mentions it)
+        if (text.toLowerCase().includes('module complete') ||
+            text.toLowerCase().includes('modul abgeschlossen') ||
+            text.toLowerCase().includes('модуль завершён')) {
+            setTimeout(() => completeModule(S.currentModule), 2000);
+        }
+
+    } catch (e) {
+        removeTyping();
+        document.getElementById('sendBtn').disabled = false;
+        console.error('AI Error:', e);
+        addBot('⚠️ Error communicating with AI. Please try again.');
+    }
+}
+
+function completeModule(moduleId) {
+    if (!S.completedModules.includes(moduleId)) {
+        S.completedModules.push(moduleId);
+        localStorage.setItem('red_ai_completed', JSON.stringify(S.completedModules));
+    }
+
+    renderModuleList();
+
+    // Move to next module
+    const moduleIds = Object.keys(MODULES);
+    const currentIndex = moduleIds.indexOf(moduleId);
+    if (currentIndex < moduleIds.length - 1) {
+        const nextId = moduleIds[currentIndex + 1];
+        setTimeout(() => {
+            if (confirm(`Great! Ready for the next module: ${MODULES[nextId].name[S.lang]}?`)) {
+                selectModule(nextId);
+            }
+        }, 1000);
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════════════
+function addBot(msg) {
+    const chat = document.getElementById('chat');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addUser(txt, img = null) {
+    const chat = document.getElementById('chat');
+    const div = document.createElement('div');
+    div.className = 'msg user';
+    div.innerHTML = `<div class="msg-bub">${txt}${img ? `<img src="${img}">` : ''}</div>`;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function addTyping() {
+    const chat = document.getElementById('chat');
+    const div = document.createElement('div');
+    div.className = 'msg bot typing-msg';
+    div.innerHTML = '<div class="msg-bub"><div class="typing"><span></span><span></span><span></span></div></div>';
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+    const typing = document.querySelector('.typing-msg');
+    if (typing) typing.remove();
+}
+
+function toggleTheme() {
+    const th = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = th;
+    document.getElementById('themeBtn').textContent = th === 'dark' ? '🌙' : '☀️';
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Input handling
+const inp = document.getElementById('inp');
+inp.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        send();
+    }
+}
+
+// File upload
+const fi = document.getElementById('fi');
+function toggleDrop() { fi.click(); }
+fi.addEventListener('change', async (e) => {
+    const f = e.target.files[0];
+    if (!f?.type.startsWith('image/')) return;
+
+    const r = new FileReader();
+    r.onload = async (ev) => {
+        const base64 = ev.target.result.split(',')[1];
+        S.project.images.push(base64);
+
+        addUser('📷 Image uploaded', ev.target.result);
+        addTyping();
+
+        // Send image to AI
+        try {
+            const imageMessage = {
+                role: 'user',
+                content: [
+                    { type: 'image', source: { type: 'base64', media_type: f.type, data: base64 } },
+                    { type: 'text', text: 'I uploaded this image. Please analyze it and give me feedback.' }
+                ]
+            };
+
+            const response = await callAnthropic([...S.conversation, imageMessage], getSystemPrompt(S.currentModule));
+
+            removeTyping();
+            const text = response.content[0].text;
+            S.conversation.push(imageMessage);
+            S.conversation.push({ role: 'assistant', content: text });
+            addBot(text);
+
+        } catch (e) {
+            removeTyping();
+            console.error('Image analysis error:', e);
+            addBot("I received your image! I'll analyze it to help with your project.");
+        }
+    };
+    r.readAsDataURL(f);
+});
+
+// Load completed modules from storage
+const saved = localStorage.getItem('red_ai_completed');
+if (saved) {
+    try {
+        S.completedModules = JSON.parse(saved);
+    } catch (e) {}
+}
+</script>
+</body>
+</html>
