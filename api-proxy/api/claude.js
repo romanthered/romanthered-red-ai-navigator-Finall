@@ -8,7 +8,7 @@ export default async function handler(req) {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, x-api-key',
+    'Access-Control-Allow-Headers': 'Content-Type, x-api-key, anthropic-version',
     'Content-Type': 'application/json',
   };
 
