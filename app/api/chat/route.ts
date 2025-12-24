@@ -1,10 +1,6 @@
 import { SYSTEM_PROMPT } from '@/lib/systemPrompt';
 import Anthropic from '@anthropic-ai/sdk';
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
 interface Message {
   role: 'user' | 'assistant';
   content: string;
@@ -19,10 +15,27 @@ interface UserProgress {
 
 export async function POST(req: Request) {
   try {
-    const { messages, userProgress } = await req.json() as {
+    const { messages, userProgress, userId, apiKey } = await req.json() as {
       messages: Message[];
       userProgress: UserProgress;
+      userId?: string;
+      apiKey?: string;
     };
+
+    // Validate API key is provided
+    if (!apiKey) {
+      return new Response(JSON.stringify({
+        error: 'API Key fehlt. Bitte füge deinen Claude API Key in den Einstellungen hinzu.'
+      }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Create client with user's API key
+    const client = new Anthropic({
+      apiKey: apiKey,
+    });
 
     // Call Claude API with full system prompt
     const response = await client.messages.create({
