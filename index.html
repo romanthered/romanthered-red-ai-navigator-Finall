@@ -481,25 +481,30 @@ function selectModule(moduleId) {
     initModule(moduleId);
 }
 
+function unlockModule(moduleId) {
+    if (!S.completedModules.includes(S.currentModule)) {
+        S.completedModules.push(S.currentModule);
+    }
+    renderModuleList();
+
+    // Show unlock notification
+    const moduleName = MODULES[moduleId]?.name[S.lang] || moduleId;
+    addBot(`🎉 **Modul freigeschaltet:** ${moduleName}! Du kannst es jetzt in der Seitenleiste öffnen.`);
+}
+
 // ═══════════════════════════════════════════════════════════════
 // AI CONVERSATION
 // ═══════════════════════════════════════════════════════════════
 const SYSTEM_PROMPTS = {
-    intro: `You are an elite learning strategist who combines the Pareto Principle with accelerated learning techniques.
+    intro: `You are the RED AI Navigator's onboarding assistant. Your goal is to understand the user and their goals for making money with AI.
 
-Your purpose is to break down any skill into its vital components:
+Ask short, friendly questions to learn about:
+- Their name
+- Their main goal (side income, full-time income, or just exploring)
+- How much time they can invest daily
+- Their current experience level with AI
 
-1. PARETO ANALYSIS - Identify the critical 20% that generates 80% of results
-2. STRATEGIC ROADMAP - Create sequential learning path with ONE specific resource per concept
-3. MASTERY VERIFICATION - Provide practical challenges and clear success metrics
-
-Be brutally honest, cut theoretical fluff, focus on practical application and measurable results.
-
-For each concept provide:
-- Why it's crucial
-- ONE specific high-quality resource (book/video/tool)
-- Practical challenge to prove understanding
-- "You truly understand this when..." statement
+Keep it conversational and encouraging. After gathering this info, give them a motivating summary and tell them their learning path is ready.
 
 Always respond in {LANG} language.`,
 
@@ -689,15 +694,20 @@ function addBot(msg) {
 
     let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
 
-    // Detect if message ends with a question
+    // Add quick reply buttons for ANY question in intro module
     if (msg.includes('?') && S.currentModule === 'intro') {
-        // Add quick reply buttons for common intro questions
-        if (msg.toLowerCase().includes('name') || msg.toLowerCase().includes('wie lautest')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Roman\')">Roman</button><button class="quick-btn" onclick="quickReply(\'Anderer Name...\')">Other</button></div>';
-        } else if (msg.toLowerCase().includes('ziel') || msg.toLowerCase().includes('goal') || msg.toLowerCase().includes('hauptziel')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Nebeneinkommen\')">💰 Side Income</button><button class="quick-btn" onclick="quickReply(\'Vollzeiteinkommen\')">🚀 Full-time</button><button class="quick-btn" onclick="quickReply(\'Erstmal erkunden\')">🔍 Exploring</button></div>';
-        } else if (msg.toLowerCase().includes('zeit') || msg.toLowerCase().includes('time') || msg.toLowerCase().includes('täglich')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'1 Stunde\')">1h/day</button><button class="quick-btn" onclick="quickReply(\'2 Stunden\')">2h/day</button><button class="quick-btn" onclick="quickReply(\'4+ Stunden\')">4+h/day</button></div>';
+        // Detect question type and add appropriate buttons
+        if (msg.toLowerCase().includes('name') || msg.toLowerCase().includes('wie lautest') || msg.toLowerCase().includes('heißt')) {
+            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Roman\')">Roman</button><button class="quick-btn" onclick="quickReply(\'Anderer Name\')">Anderer Name</button></div>';
+        } else if (msg.toLowerCase().includes('ziel') || msg.toLowerCase().includes('goal') || msg.toLowerCase().includes('hauptziel') || msg.toLowerCase().includes('erreichen')) {
+            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Nebeneinkommen aufbauen\')">💰 Nebeneinkommen</button><button class="quick-btn" onclick="quickReply(\'Vollzeit Einkommen\')">🚀 Vollzeit</button><button class="quick-btn" onclick="quickReply(\'Erstmal erkunden\')">🔍 Erkunden</button></div>';
+        } else if (msg.toLowerCase().includes('zeit') || msg.toLowerCase().includes('time') || msg.toLowerCase().includes('täglich') || msg.toLowerCase().includes('stunden')) {
+            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'1 Stunde täglich\')">1h/Tag</button><button class="quick-btn" onclick="quickReply(\'2-3 Stunden täglich\')">2-3h/Tag</button><button class="quick-btn" onclick="quickReply(\'4+ Stunden täglich\')">4+h/Tag</button></div>';
+        } else if (msg.toLowerCase().includes('erfahrung') || msg.toLowerCase().includes('experience') || msg.toLowerCase().includes('kenntnisse') || msg.toLowerCase().includes('wissen')) {
+            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Absoluter Anfänger\')">🌱 Anfänger</button><button class="quick-btn" onclick="quickReply(\'Etwas Erfahrung\')">📚 Mittel</button><button class="quick-btn" onclick="quickReply(\'Fortgeschritten\')">🚀 Fortgeschritten</button></div>';
+        } else {
+            // Generic buttons for any other question
+            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Ja\')">✓ Ja</button><button class="quick-btn" onclick="quickReply(\'Nein\')">✗ Nein</button><button class="quick-btn" onclick="quickReply(\'Weiß nicht\')">🤔 Weiß nicht</button></div>';
         }
     }
 
@@ -709,6 +719,16 @@ function addBot(msg) {
 function quickReply(text) {
     // Remove all quick reply buttons
     document.querySelectorAll('.quick-replies').forEach(el => el.remove());
+
+    // Track answers for module progression
+    if (!S.introAnswers) S.introAnswers = 0;
+    S.introAnswers++;
+
+    // After 4 answers, unlock next module
+    if (S.introAnswers >= 4 && S.currentModule === 'intro') {
+        unlockModule('what_is_ai');
+    }
+
     // Send the response
     document.getElementById('inp').value = text;
     send();
