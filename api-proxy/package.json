@@ -1,0 +1,9 @@
+{
+  "name": "red-ai-proxy",
+  "version": "1.0.0",
+  "description": "Anthropic API Proxy for RED AI Navigator",
+  "scripts": {
+    "dev": "vercel dev",
+    "deploy": "vercel --prod"
+  }
+}
