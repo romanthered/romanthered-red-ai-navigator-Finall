@@ -410,6 +410,11 @@ function initAnthropic() {
     console.log('API Key configured');
 }
 
+function resetApiKey() {
+    localStorage.removeItem('red_ai_api_key');
+    location.reload();
+}
+
 function startApp() {
     document.getElementById('apiOv').classList.add('hid');
     document.getElementById('app').style.display = 'grid';
@@ -586,7 +591,8 @@ async function initModule(moduleId) {
     } catch (e) {
         removeTyping();
         console.error('AI Error:', e);
-        addBot('⚠️ Connection error. Please check your API key and try again.');
+        const errorMsg = '⚠️ Connection error. Please check your API key. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>';
+        addBot(errorMsg);
     }
 }
 
@@ -626,7 +632,8 @@ async function send() {
         removeTyping();
         document.getElementById('sendBtn').disabled = false;
         console.error('AI Error:', e);
-        addBot('⚠️ Error communicating with AI. Please try again.');
+        const errorMsg = '⚠️ Error communicating with AI. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>';
+        addBot(errorMsg);
     }
 }
 
