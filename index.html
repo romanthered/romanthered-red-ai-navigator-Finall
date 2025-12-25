@@ -981,28 +981,32 @@ async function send() {
 
         // Intro module progress tracking
         if (S.currentModule === 'intro') {
+            // For text input (non-button answers), we need to mark them as answered
+            // Buttons already set answeredQuestions in quickReply()
             const lowerText = txt.toLowerCase();
 
-            // Track which question was answered based on content
-            if (S.introStep === 0 && txt.length > 0) {
-                // Name answered
-                S.profile.name = txt;
+            if (S.introStep === 0 && !S.answeredQuestions['name'] && txt.length > 0) {
                 S.answeredQuestions['name'] = txt;
-                updateIntroProgress(1);
-            } else if (S.introStep === 1 && (lowerText.includes('income') || lowerText.includes('einkommen') || lowerText.includes('доход') || lowerText.includes('exploring') || lowerText.includes('erkunden') || lowerText.includes('vollzeit') || lowerText.includes('full'))) {
-                // Goal answered
-                S.profile.goal = txt;
+            } else if (S.introStep === 1 && !S.answeredQuestions['goal']) {
                 S.answeredQuestions['goal'] = txt;
-                updateIntroProgress(2);
-            } else if (S.introStep === 2 && (lowerText.includes('hour') || lowerText.includes('stunde') || lowerText.includes('час') || lowerText.includes('h/') || lowerText.includes('ч/'))) {
-                // Time answered
-                S.profile.time = txt;
+            } else if (S.introStep === 2 && !S.answeredQuestions['time']) {
                 S.answeredQuestions['time'] = txt;
-                updateIntroProgress(3);
-            } else if (S.introStep === 3 && (lowerText.includes('beginner') || lowerText.includes('anfänger') || lowerText.includes('новичок') || lowerText.includes('experience') || lowerText.includes('erfahrung') || lowerText.includes('опыт') || lowerText.includes('advanced') || lowerText.includes('fortgeschritten'))) {
-                // Experience answered
-                S.profile.experience = txt;
+            } else if (S.introStep === 3 && !S.answeredQuestions['experience']) {
                 S.answeredQuestions['experience'] = txt;
+            }
+
+            // Now check if we just answered a question and update progress
+            if (S.introStep === 0 && S.answeredQuestions['name']) {
+                S.profile.name = S.answeredQuestions['name'];
+                updateIntroProgress(1);
+            } else if (S.introStep === 1 && S.answeredQuestions['goal']) {
+                S.profile.goal = S.answeredQuestions['goal'];
+                updateIntroProgress(2);
+            } else if (S.introStep === 2 && S.answeredQuestions['time']) {
+                S.profile.time = S.answeredQuestions['time'];
+                updateIntroProgress(3);
+            } else if (S.introStep === 3 && S.answeredQuestions['experience']) {
+                S.profile.experience = S.answeredQuestions['experience'];
                 updateIntroProgress(4);
             }
 
