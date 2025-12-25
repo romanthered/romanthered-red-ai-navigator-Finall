@@ -1144,18 +1144,18 @@ function addBot(msg, skipButtons = false) {
     if (!skipButtons && msg.includes('?')) {
         const msgLower = msg.toLowerCase();
 
-        // Module completion buttons - show when AI asks if user wants to repeat or finish
-        // Check for various phrasings of the completion question
+        // Module completion buttons - ALWAYS show when AI asks if user wants to repeat or finish
+        // This takes priority over other buttons
         const hasRepeatKeyword = msgLower.includes('wiederholen') || msgLower.includes('repeat') || msgLower.includes('повторить') || msgLower.includes('fragen');
         const hasFinishKeyword = msgLower.includes('abschließen') || msgLower.includes('finish') || msgLower.includes('complete') || msgLower.includes('завершить') || msgLower.includes('modul');
 
         if (hasRepeatKeyword && hasFinishKeyword) {
-            html += `<div class="quick-replies">
+            html += `<div class="quick-replies completion-buttons">
                 <button class="quick-btn" onclick="handleModuleRepeat()" style="background: #f59e0b; border-color: #f59e0b;">🔄 ${t('repeatModule')}</button>
                 <button class="quick-btn" onclick="handleModuleComplete()" style="background: #10b981; border-color: #10b981;">✅ Modul abschließen</button>
             </div>`;
         }
-        // Intro module specific buttons
+        // Intro module specific buttons - only show if NOT completion question
         else if (S.currentModule === 'intro') {
             // Name question - NO buttons (user should type)
             if ((msgLower.includes('name') || msgLower.includes('heißt') || msgLower.includes('имя')) && !S.answeredQuestions['name']) {
