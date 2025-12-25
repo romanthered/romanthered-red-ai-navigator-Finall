@@ -815,7 +815,10 @@ function addBot(msg) {
     let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
 
     // Add quick reply buttons for specific questions in intro module
-    if (msg.includes('?') && S.currentModule === 'intro') {
+    // Only show buttons if there aren't any buttons already visible
+    const hasExistingButtons = document.querySelector('.quick-replies') !== null;
+
+    if (msg.includes('?') && S.currentModule === 'intro' && !hasExistingButtons) {
         // Detect question type and add appropriate buttons
         // Skip buttons for name questions - let user type freely
         const isNameQuestion = msg.toLowerCase().includes('name') ||
@@ -843,7 +846,7 @@ function addBot(msg) {
 }
 
 function quickReply(text) {
-    // Remove all quick reply buttons
+    // Remove all quick reply buttons immediately
     document.querySelectorAll('.quick-replies').forEach(el => el.remove());
 
     // Track answers for module progression
