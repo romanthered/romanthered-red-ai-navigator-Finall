@@ -734,13 +734,10 @@ function updateIntroProgress(step) {
         }
     }
 
-    // Check if intro complete
+    // Check if intro complete - mark as ready but don't auto-complete
     if (step >= 4) {
-        setTimeout(() => {
-            if (!S.completedModules.includes('intro')) {
-                completeModule('intro');
-            }
-        }, 1500);
+        S.introComplete = true;
+        saveUserData();
     }
 }
 
@@ -846,7 +843,10 @@ Ask ONE question at a time in this order:
 4. Their current experience level with AI (ask: "What is your experience level with AI?")
 
 After each answer, give a brief encouraging response and ask the next question.
-After all 4 questions are answered, give them a motivating summary and tell them their learning path is ready.
+After all 4 questions are answered, give them a motivating summary about their learning path.
+
+IMPORTANT: After the summary, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+DO NOT auto-complete - wait for user confirmation!
 
 Keep it conversational and encouraging. Always respond in {LANG} language.`,
 
@@ -867,46 +867,60 @@ TOPICS TO COVER (one at a time):
 6. Tokens (Brief intro - will be covered in detail in next module)
 
 After ALL topics are covered, give a SHORT quiz (3 multiple choice questions) to test understanding.
-After quiz is complete, congratulate them and tell them to move to the next module.
+After quiz is complete, give congratulations and a brief summary.
+
+IMPORTANT: After the summary, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+DO NOT auto-complete - wait for user confirmation!
 
 Keep each explanation SHORT (3-4 sentences max), PRACTICAL, and income-focused.
 Always respond in {LANG} language.`,
 
     tokens: `You are teaching about tokens in AI. Explain what tokens are, how they work, pricing, and why it matters for costs.
 Give practical examples. Include a quiz about token counts.
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     context: `You are teaching about context in AI. Explain why context is crucial for quality outputs, how to structure good prompts.
 Be practical with examples from real use cases.
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     voiceovers: `You are teaching the AI Voiceovers income method. Cover: tools (ElevenLabs, Play.ht, Murf), use cases, getting started, income potential (€500-2000/month).
 Be specific and actionable.
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     imagegen: `You are teaching AI Image Generation. Cover: tools (Midjourney, DALL-E, Stable Diffusion, Leonardo.ai), prompting tips, income potential.
 Focus on practical money-making applications.
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     videogen: `You are teaching AI Video Generation. Cover: tools (Runway, Pika, HeyGen), use cases (faceless YouTube, shorts), income potential (€1000-5000/month).
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     chatbots: `You are teaching AI Chatbots. Cover: business applications, customer service, lead gen, tools, income potential (€2000-10000/month).
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     automation: `You are teaching AI Automation. Cover: tools (Make.com, Zapier, n8n), workflows, business applications, income potential (€1500-5000/month).
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     copywriting: `You are teaching AI Copywriting. Cover: frameworks (AIDA, PAS, BAB), tools, income potential (€1000-5000/month), getting first clients.
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     websites: `You are teaching AI Website building. Cover: tools (Framer, Webflow, v0.dev, Cursor), no-code options, income potential (€1000-4000/month).
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     research: `You are teaching AI Research services. Cover: market research, competitor analysis, data processing, income potential (€1000-4000/month).
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     consulting: `You are teaching AI Consulting. Cover: strategy, implementation, training, pricing models (hourly €100-300, project €1000-10000), highest income potential (€3000-20000/month).
+At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     choose_path: `You are helping the user choose their AI income path. They've learned all 9 methods. Help them pick 1-3 that fit their profile.
@@ -1073,38 +1087,48 @@ function addBot(msg, skipButtons = false) {
 
     let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
 
-    // Add quick reply buttons ONLY in intro module for specific questions
-    // AND only if we haven't answered this type of question yet
-    if (!skipButtons && msg.includes('?') && S.currentModule === 'intro') {
+    // Add quick reply buttons
+    if (!skipButtons && msg.includes('?')) {
         const msgLower = msg.toLowerCase();
 
-        // Name question - NO buttons (user should type)
-        if ((msgLower.includes('name') || msgLower.includes('heißt') || msgLower.includes('имя')) && !S.answeredQuestions['name']) {
-            // No buttons for name
-        }
-        // Goal question
-        else if ((msgLower.includes('goal') || msgLower.includes('ziel') || msgLower.includes('цел') || msgLower.includes('hauptziel')) && !S.answeredQuestions['goal']) {
+        // Module completion buttons - show when AI asks if user wants to repeat or finish
+        if ((msgLower.includes('wiederholen') || msgLower.includes('repeat') || msgLower.includes('повторить')) &&
+            (msgLower.includes('abschließen') || msgLower.includes('finish') || msgLower.includes('complete') || msgLower.includes('завершить'))) {
             html += `<div class="quick-replies">
-                <button class="quick-btn" onclick="quickReply('${t('sideIncome')}', 'goal')">${t('sideIncome')}</button>
-                <button class="quick-btn" onclick="quickReply('${t('fullTime')}', 'goal')">${t('fullTime')}</button>
-                <button class="quick-btn" onclick="quickReply('${t('exploring')}', 'goal')">${t('exploring')}</button>
+                <button class="quick-btn" onclick="handleModuleRepeat()" style="background: #f59e0b; border-color: #f59e0b;">🔄 ${t('repeatModule')}</button>
+                <button class="quick-btn" onclick="handleModuleComplete()" style="background: #10b981; border-color: #10b981;">✅ Modul abschließen</button>
             </div>`;
         }
-        // Time question
-        else if ((msgLower.includes('time') || msgLower.includes('zeit') || msgLower.includes('врем') || msgLower.includes('täglich') || msgLower.includes('invest')) && !S.answeredQuestions['time']) {
-            html += `<div class="quick-replies">
-                <button class="quick-btn" onclick="quickReply('${t('oneHour')}', 'time')">${t('oneHour')}</button>
-                <button class="quick-btn" onclick="quickReply('${t('twoThreeHours')}', 'time')">${t('twoThreeHours')}</button>
-                <button class="quick-btn" onclick="quickReply('${t('fourPlusHours')}', 'time')">${t('fourPlusHours')}</button>
-            </div>`;
-        }
-        // Experience question
-        else if ((msgLower.includes('experience') || msgLower.includes('erfahrung') || msgLower.includes('опыт') || msgLower.includes('level') || msgLower.includes('kenntnisse')) && !S.answeredQuestions['experience']) {
-            html += `<div class="quick-replies">
-                <button class="quick-btn" onclick="quickReply('${t('beginner')}', 'experience')">${t('beginner')}</button>
-                <button class="quick-btn" onclick="quickReply('${t('intermediate')}', 'experience')">${t('intermediate')}</button>
-                <button class="quick-btn" onclick="quickReply('${t('advanced')}', 'experience')">${t('advanced')}</button>
-            </div>`;
+        // Intro module specific buttons
+        else if (S.currentModule === 'intro') {
+            // Name question - NO buttons (user should type)
+            if ((msgLower.includes('name') || msgLower.includes('heißt') || msgLower.includes('имя')) && !S.answeredQuestions['name']) {
+                // No buttons for name
+            }
+            // Goal question
+            else if ((msgLower.includes('goal') || msgLower.includes('ziel') || msgLower.includes('цел') || msgLower.includes('hauptziel')) && !S.answeredQuestions['goal']) {
+                html += `<div class="quick-replies">
+                    <button class="quick-btn" onclick="quickReply('${t('sideIncome')}', 'goal')">${t('sideIncome')}</button>
+                    <button class="quick-btn" onclick="quickReply('${t('fullTime')}', 'goal')">${t('fullTime')}</button>
+                    <button class="quick-btn" onclick="quickReply('${t('exploring')}', 'goal')">${t('exploring')}</button>
+                </div>`;
+            }
+            // Time question
+            else if ((msgLower.includes('time') || msgLower.includes('zeit') || msgLower.includes('врем') || msgLower.includes('täglich') || msgLower.includes('invest')) && !S.answeredQuestions['time']) {
+                html += `<div class="quick-replies">
+                    <button class="quick-btn" onclick="quickReply('${t('oneHour')}', 'time')">${t('oneHour')}</button>
+                    <button class="quick-btn" onclick="quickReply('${t('twoThreeHours')}', 'time')">${t('twoThreeHours')}</button>
+                    <button class="quick-btn" onclick="quickReply('${t('fourPlusHours')}', 'time')">${t('fourPlusHours')}</button>
+                </div>`;
+            }
+            // Experience question
+            else if ((msgLower.includes('experience') || msgLower.includes('erfahrung') || msgLower.includes('опыт') || msgLower.includes('level') || msgLower.includes('kenntnisse')) && !S.answeredQuestions['experience']) {
+                html += `<div class="quick-replies">
+                    <button class="quick-btn" onclick="quickReply('${t('beginner')}', 'experience')">${t('beginner')}</button>
+                    <button class="quick-btn" onclick="quickReply('${t('intermediate')}', 'experience')">${t('intermediate')}</button>
+                    <button class="quick-btn" onclick="quickReply('${t('advanced')}', 'experience')">${t('advanced')}</button>
+                </div>`;
+            }
         }
     }
 
@@ -1374,6 +1398,65 @@ window.addEventListener('resize', () => {
         confettiCanvas.height = window.innerHeight;
     }
 });
+
+// ═══════════════════════════════════════════════════════════════
+// MODULE COMPLETION HANDLERS
+// ═══════════════════════════════════════════════════════════════
+function handleModuleComplete() {
+    // Remove buttons
+    document.querySelectorAll('.quick-replies').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-10px)';
+        setTimeout(() => el.remove(), 300);
+    });
+
+    // Show completion popup with confetti
+    setTimeout(() => {
+        completeModule(S.currentModule);
+    }, 500);
+}
+
+function handleModuleRepeat() {
+    // Remove buttons
+    document.querySelectorAll('.quick-replies').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-10px)';
+        setTimeout(() => el.remove(), 300);
+    });
+
+    // Show inline correction options for intro
+    if (S.currentModule === 'intro') {
+        setTimeout(() => {
+            showInlineCorrectionOptions();
+        }, 500);
+    } else {
+        // For other modules, clear conversation and restart
+        setTimeout(() => {
+            S.moduleConversations[S.currentModule] = [];
+            document.getElementById('chat').innerHTML = '';
+            initModule(S.currentModule);
+        }, 500);
+    }
+}
+
+function showInlineCorrectionOptions() {
+    const chat = document.getElementById('chat');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.innerHTML = `
+        <div class="msg-bub">
+            <strong>${t('whatToCorrect')}</strong>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;">
+                <button onclick="correctField('name')" class="quick-btn" style="background:#f59e0b;border-color:#f59e0b;">📝 ${t('yourName')}</button>
+                <button onclick="correctField('goal')" class="quick-btn" style="background:#f59e0b;border-color:#f59e0b;">🎯 ${t('yourGoal')}</button>
+                <button onclick="correctField('time')" class="quick-btn" style="background:#f59e0b;border-color:#f59e0b;">⏰ ${t('timeAvailable')}</button>
+                <button onclick="correctField('experience')" class="quick-btn" style="background:#f59e0b;border-color:#f59e0b;">📊 ${t('experience')}</button>
+            </div>
+        </div>
+    `;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+}
 
 // ═══════════════════════════════════════════════════════════════
 // DELETE ALL DATA
