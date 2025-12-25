@@ -89,6 +89,18 @@
         /* Main Content */
         .main{display:flex;flex-direction:column;overflow:hidden;position:relative}
 
+        /* Intro Progress Indicator */
+        .intro-progress{padding:16px 40px;background:var(--surface-solid);border-bottom:1px solid var(--border);display:none}
+        .intro-progress.show{display:block}
+        .intro-steps{display:flex;gap:12px;max-width:720px;margin:0 auto}
+        .intro-step{flex:1;display:flex;flex-direction:column;gap:6px}
+        .intro-step-num{font-size:11px;color:var(--text-m);font-weight:600}
+        .intro-step-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+        .intro-step-fill{height:100%;background:var(--grad);border-radius:2px;width:0%;transition:width 0.5s}
+        .intro-step.completed .intro-step-fill{width:100%}
+        .intro-step.completed .intro-step-num{color:var(--accent)}
+        .intro-step-label{font-size:10px;color:var(--text-m)}
+
         /* Chat Area */
         .chat{flex:1;overflow-y:auto;padding:40px;display:flex;flex-direction:column;gap:24px}
         .chat::-webkit-scrollbar{width:6px}
@@ -104,7 +116,8 @@
         .msg-bub img{max-width:100%;border-radius:12px;margin-top:12px}
 
         /* Quick Reply Buttons */
-        .quick-replies{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+        .quick-replies{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;animation:fadeIn 0.3s ease}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         .quick-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;transition:all .2s}
         .quick-btn:hover{background:var(--accent-s);border-color:var(--accent);transform:translateY(-2px)}
         .quick-btn:active{transform:translateY(0)}
@@ -150,6 +163,10 @@
         .api-box{max-width:500px;background:var(--surface-solid);border:1px solid var(--border);border-radius:20px;padding:40px;text-align:center}
         .api-title{font-family:'Syne';font-size:24px;font-weight:700;margin-bottom:12px}
         .api-sub{color:var(--text-s);margin-bottom:24px;line-height:1.6;font-size:14px}
+        .api-notice{background:var(--accent-s);border:1px solid var(--accent);border-radius:12px;padding:16px;margin-bottom:24px;display:flex;gap:12px;align-items:start;text-align:left}
+        .api-notice-icon{font-size:20px;flex-shrink:0}
+        .api-notice-text{font-size:13px;line-height:1.6;color:var(--text)}
+        .api-notice-text strong{color:var(--accent);font-weight:600}
         .api-input-wrap{margin-bottom:20px}
         .api-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--text);font-family:'Inter',sans-serif;transition:border-color .2s}
         .api-input:focus{outline:none;border-color:var(--accent)}
@@ -163,28 +180,9 @@
         .api-help-link{color:var(--accent);font-size:13px;text-decoration:none}
         .api-help-link:hover{text-decoration:underline}
 
-        /* Responsive */
-        @media(max-width:900px){
-            .app{grid-template-columns:1fr}
-            .sidebar{position:fixed;left:0;top:60px;bottom:0;width:280px;z-index:100;transform:translateX(-100%);transition:transform .3s}
-            .sidebar.open{transform:translateX(0)}
-            .menu-btn{display:flex}
-            .header-center{display:none}
-        }
-        @media(max-width:600px){
-            .chat{padding:24px 16px}
-            .input-area{padding:16px}
-            .lang-opts{flex-direction:column}
-            .lang-title{font-size:24px}
-            .api-box{padding:24px;margin:20px}
-        }
-
-        #fi{display:none}
-
         /* Module Completion Popup */
         .completion-overlay{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px)}
         .completion-overlay.show{display:flex;animation:fadeIn 0.5s ease}
-        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
         .completion-box{max-width:600px;background:var(--surface-solid);border:2px solid var(--accent);border-radius:24px;padding:48px;text-align:center;position:relative;animation:popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)}
         @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
@@ -217,6 +215,27 @@
         .correction-options.show{display:flex}
         .correction-btn{background:var(--elevated);border:1px solid var(--border);padding:14px;border-radius:12px;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter'}
         .correction-btn:hover{background:var(--accent-s);border-color:var(--accent);transform:translateX(4px)}
+
+        /* Responsive */
+        @media(max-width:900px){
+            .app{grid-template-columns:1fr}
+            .sidebar{position:fixed;left:0;top:60px;bottom:0;width:280px;z-index:100;transform:translateX(-100%);transition:transform .3s}
+            .sidebar.open{transform:translateX(0)}
+            .menu-btn{display:flex}
+            .header-center{display:none}
+        }
+        @media(max-width:600px){
+            .chat{padding:24px 16px}
+            .input-area{padding:16px}
+            .lang-opts{flex-direction:column}
+            .lang-title{font-size:24px}
+            .api-box{padding:24px;margin:20px}
+            .completion-box{padding:32px;margin:20px}
+            .intro-progress{padding:12px 16px}
+            .intro-steps{gap:8px}
+        }
+
+        #fi{display:none}
     </style>
 </head>
 <body>
@@ -273,6 +292,14 @@
         <div class="api-box">
             <div class="api-title" id="apiTitle">Connect Your AI</div>
             <div class="api-sub" id="apiSub">Enter your Anthropic API key to unlock the full RED AI Navigator experience. Your key is stored locally and never shared.</div>
+
+            <div class="api-notice">
+                <div class="api-notice-icon">💡</div>
+                <div class="api-notice-text">
+                    <strong id="apiNoticeTitle">Important:</strong> <span id="apiNoticeText">Your API key will be saved in your browser. All your progress, answers, and conversations will be stored under this key. Don't forget your API key!</span>
+                </div>
+            </div>
+
             <div class="api-input-wrap">
                 <input type="password" id="apiKey" class="api-input" placeholder="sk-ant-api03-...">
             </div>
@@ -319,6 +346,32 @@
         </aside>
 
         <main class="main">
+            <!-- Intro Progress Indicator -->
+            <div class="intro-progress" id="introProgress">
+                <div class="intro-steps">
+                    <div class="intro-step" id="step1">
+                        <div class="intro-step-num">1</div>
+                        <div class="intro-step-bar"><div class="intro-step-fill"></div></div>
+                        <div class="intro-step-label" id="step1Label">Name</div>
+                    </div>
+                    <div class="intro-step" id="step2">
+                        <div class="intro-step-num">2</div>
+                        <div class="intro-step-bar"><div class="intro-step-fill"></div></div>
+                        <div class="intro-step-label" id="step2Label">Goal</div>
+                    </div>
+                    <div class="intro-step" id="step3">
+                        <div class="intro-step-num">3</div>
+                        <div class="intro-step-bar"><div class="intro-step-fill"></div></div>
+                        <div class="intro-step-label" id="step3Label">Time</div>
+                    </div>
+                    <div class="intro-step" id="step4">
+                        <div class="intro-step-num">4</div>
+                        <div class="intro-step-bar"><div class="intro-step-fill"></div></div>
+                        <div class="intro-step-label" id="step4Label">Experience</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="chat" id="chat"></div>
 
             <div class="input-area">
@@ -379,12 +432,12 @@ animateStars();
 const S = {
     lang: null,
     apiKey: localStorage.getItem('red_ai_api_key') || null,
-    anthropic: null,
-    conversation: [],
     currentModule: 'intro',
     completedModules: [],
     profile: {},
-    project: { images: [], notes: [] }
+    introStep: 0,
+    answeredQuestions: {},
+    moduleConversations: {}
 };
 
 const MODULES = {
@@ -420,6 +473,8 @@ const i18n = {
         apiError: 'Invalid API key. Please check and try again.',
         apiHelp: "Don't have an API key?",
         apiHelpLink: 'Get one from Anthropic →',
+        apiNoticeTitle: 'Important:',
+        apiNoticeText: 'Your API key will be saved in your browser. All your progress, answers, and conversations will be stored under this key. Don\'t forget your API key!',
         // Quick reply buttons
         sideIncome: '💰 Side Income',
         fullTime: '🚀 Full-time',
@@ -440,7 +495,13 @@ const i18n = {
         yourName: 'Your Name',
         yourGoal: 'Your Goal',
         timeAvailable: 'Available Time',
-        experience: 'Experience Level'
+        experience: 'Experience Level',
+        progress: 'Progress',
+        // Intro steps
+        stepName: 'Name',
+        stepGoal: 'Goal',
+        stepTime: 'Time',
+        stepExperience: 'Experience'
     },
     de: {
         apiTitle: 'Verbinde deine AI',
@@ -449,6 +510,8 @@ const i18n = {
         apiError: 'Ungültiger API Key. Bitte prüfen.',
         apiHelp: 'Noch keinen API Key?',
         apiHelpLink: 'Hol dir einen bei Anthropic →',
+        apiNoticeTitle: 'Wichtig:',
+        apiNoticeText: 'Dein API-Schlüssel wird in deinem Browser gespeichert. Alle deine Fortschritte, Antworten und Gespräche werden unter diesem Schlüssel gespeichert. Vergiss deinen API-Schlüssel nicht!',
         // Quick reply buttons
         sideIncome: '💰 Nebeneinkommen',
         fullTime: '🚀 Vollzeit',
@@ -469,7 +532,13 @@ const i18n = {
         yourName: 'Dein Name',
         yourGoal: 'Dein Ziel',
         timeAvailable: 'Verfügbare Zeit',
-        experience: 'Erfahrungslevel'
+        experience: 'Erfahrungslevel',
+        progress: 'Fortschritt',
+        // Intro steps
+        stepName: 'Name',
+        stepGoal: 'Ziel',
+        stepTime: 'Zeit',
+        stepExperience: 'Erfahrung'
     },
     ru: {
         apiTitle: 'Подключи свой AI',
@@ -478,6 +547,8 @@ const i18n = {
         apiError: 'Неверный API ключ. Проверь.',
         apiHelp: 'Нет API ключа?',
         apiHelpLink: 'Получи у Anthropic →',
+        apiNoticeTitle: 'Важно:',
+        apiNoticeText: 'Твой API-ключ будет сохранён в браузере. Все твои успехи, ответы и разговоры будут сохранены под этим ключом. Не забудь свой API-ключ!',
         // Quick reply buttons
         sideIncome: '💰 Доп. доход',
         fullTime: '🚀 Полная занятость',
@@ -498,12 +569,73 @@ const i18n = {
         yourName: 'Твоё имя',
         yourGoal: 'Твоя цель',
         timeAvailable: 'Доступное время',
-        experience: 'Уровень опыта'
+        experience: 'Уровень опыта',
+        progress: 'Прогресс',
+        // Intro steps
+        stepName: 'Имя',
+        stepGoal: 'Цель',
+        stepTime: 'Время',
+        stepExperience: 'Опыт'
     }
 };
 
 function t(key) {
     return i18n[S.lang]?.[key] || i18n.en[key] || key;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// USER DATA PERSISTENCE (per API key)
+// ═══════════════════════════════════════════════════════════════
+function getUserDataKey() {
+    // Create a hash of API key for storage
+    return 'red_ai_user_' + btoa(S.apiKey).substring(0, 20);
+}
+
+function saveUserData() {
+    if (!S.apiKey) return;
+
+    const userData = {
+        lang: S.lang,
+        completedModules: S.completedModules,
+        profile: S.profile,
+        introStep: S.introStep,
+        answeredQuestions: S.answeredQuestions,
+        moduleConversations: S.moduleConversations,
+        lastUpdated: new Date().toISOString()
+    };
+
+    localStorage.setItem(getUserDataKey(), JSON.stringify(userData));
+}
+
+function loadUserData() {
+    if (!S.apiKey) return;
+
+    const data = localStorage.getItem(getUserDataKey());
+    if (data) {
+        try {
+            const userData = JSON.parse(data);
+            S.lang = userData.lang || S.lang;
+            S.completedModules = userData.completedModules || [];
+            S.profile = userData.profile || {};
+            S.introStep = userData.introStep || 0;
+            S.answeredQuestions = userData.answeredQuestions || {};
+            S.moduleConversations = userData.moduleConversations || {};
+            console.log('User data loaded successfully');
+        } catch (e) {
+            console.error('Failed to load user data:', e);
+        }
+    }
+}
+
+function saveConversation(moduleId) {
+    if (!S.moduleConversations[moduleId]) {
+        S.moduleConversations[moduleId] = [];
+    }
+    saveUserData();
+}
+
+function getConversation(moduleId) {
+    return S.moduleConversations[moduleId] || [];
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -517,10 +649,18 @@ function selectLang(lang) {
     document.getElementById('apiTitle').textContent = t('apiTitle');
     document.getElementById('apiSub').textContent = t('apiSub');
     document.getElementById('apiBtn').textContent = t('apiBtn');
+    document.getElementById('apiNoticeTitle').textContent = t('apiNoticeTitle');
+    document.getElementById('apiNoticeText').textContent = t('apiNoticeText');
+
+    // Update intro step labels
+    document.getElementById('step1Label').textContent = t('stepName');
+    document.getElementById('step2Label').textContent = t('stepGoal');
+    document.getElementById('step3Label').textContent = t('stepTime');
+    document.getElementById('step4Label').textContent = t('stepExperience');
 
     // Show API screen or skip if already have key
     if (S.apiKey) {
-        initAnthropic();
+        loadUserData();
         startApp();
     } else {
         document.getElementById('apiOv').classList.remove('hid');
@@ -538,13 +678,8 @@ function saveApiKey() {
     localStorage.setItem('red_ai_api_key', key);
     document.getElementById('apiError').textContent = '';
 
-    initAnthropic();
+    loadUserData();
     startApp();
-}
-
-function initAnthropic() {
-    // API calls will be made directly via fetch
-    console.log('API Key configured');
 }
 
 function resetApiKey() {
@@ -557,6 +692,33 @@ function startApp() {
     document.getElementById('app').style.display = 'grid';
     renderModuleList();
     initModule('intro');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INTRO PROGRESS TRACKING
+// ═══════════════════════════════════════════════════════════════
+function updateIntroProgress(step) {
+    S.introStep = step;
+    saveUserData();
+
+    // Update visual progress
+    for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`step${i}`);
+        if (i <= step) {
+            stepEl.classList.add('completed');
+        } else {
+            stepEl.classList.remove('completed');
+        }
+    }
+
+    // Check if intro complete
+    if (step >= 4) {
+        setTimeout(() => {
+            if (!S.completedModules.includes('intro')) {
+                completeModule('intro');
+            }
+        }, 1500);
+    }
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -607,20 +769,45 @@ function updateProgress() {
 
 function selectModule(moduleId) {
     S.currentModule = moduleId;
+
+    // Show/hide intro progress
+    if (moduleId === 'intro') {
+        document.getElementById('introProgress').classList.add('show');
+        updateIntroProgress(S.introStep);
+    } else {
+        document.getElementById('introProgress').classList.remove('show');
+    }
+
+    // Clear chat and reload conversation
     document.getElementById('chat').innerHTML = '';
+
+    // Load saved conversation or start new
+    const savedConv = getConversation(moduleId);
+    if (savedConv.length > 0) {
+        // Restore saved conversation
+        savedConv.forEach(msg => {
+            if (msg.role === 'assistant') {
+                addBot(msg.content, true); // true = skip button logic
+            } else {
+                addUser(msg.content);
+            }
+        });
+    } else {
+        // Start new module
+        initModule(moduleId);
+    }
+
     renderModuleList();
-    initModule(moduleId);
 }
 
-function unlockModule(moduleId) {
-    if (!S.completedModules.includes(S.currentModule)) {
-        S.completedModules.push(S.currentModule);
+function completeModule(moduleId) {
+    if (!S.completedModules.includes(moduleId)) {
+        S.completedModules.push(moduleId);
+        saveUserData();
     }
-    renderModuleList();
 
-    // Show unlock notification
-    const moduleName = MODULES[moduleId]?.name[S.lang] || moduleId;
-    addBot(`🎉 **Modul freigeschaltet:** ${moduleName}! Du kannst es jetzt in der Seitenleiste öffnen.`);
+    renderModuleList();
+    showCompletionPopup(moduleId);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -629,15 +816,16 @@ function unlockModule(moduleId) {
 const SYSTEM_PROMPTS = {
     intro: `You are the RED AI Navigator's onboarding assistant. Your goal is to understand the user and their goals for making money with AI.
 
-Ask short, friendly questions to learn about:
-- Their name
-- Their main goal (side income, full-time income, or just exploring)
-- How much time they can invest daily
-- Their current experience level with AI
+Ask ONE question at a time in this order:
+1. Their name (ask: "What is your name?")
+2. Their main goal (ask: "What is your main goal - side income, full-time income, or just exploring?")
+3. How much time they can invest daily (ask: "How much time can you invest daily?")
+4. Their current experience level with AI (ask: "What is your experience level with AI?")
 
-Keep it conversational and encouraging. After gathering this info, give them a motivating summary and tell them their learning path is ready.
+After each answer, give a brief encouraging response and ask the next question.
+After all 4 questions are answered, give them a motivating summary and tell them their learning path is ready.
 
-Always respond in {LANG} language.`,
+Keep it conversational and encouraging. Always respond in {LANG} language.`,
 
     what_is_ai: `You are teaching about AI basics. Explain what AI is, different types (LLMs, Image AI, Voice AI, Video AI), and their applications.
 Include interactive quizzes. Be educational but keep it practical and income-focused.
@@ -726,29 +914,37 @@ async function callAnthropic(messages, system) {
 }
 
 async function initModule(moduleId) {
-    // Clear conversation for new module
-    S.conversation = [];
+    // Load existing conversation or start new
+    const conversation = getConversation(moduleId);
 
-    // Add initial AI message
-    addTyping();
+    if (conversation.length === 0) {
+        // Start new module
+        addTyping();
 
-    try {
-        const response = await callAnthropic([{
-            role: 'user',
-            content: `Start the ${moduleId} module. Greet me and begin the lesson.`
-        }], getSystemPrompt(moduleId));
+        try {
+            const response = await callAnthropic([{
+                role: 'user',
+                content: `Start the ${moduleId} module. Greet me and begin the lesson.`
+            }], getSystemPrompt(moduleId));
 
-        removeTyping();
-        const text = response.content[0].text;
-        S.conversation.push({ role: 'assistant', content: text });
-        addBot(text);
+            removeTyping();
+            const text = response.content[0].text;
 
-    } catch (e) {
-        removeTyping();
-        console.error('AI Error:', e);
-        console.error('Error details:', e.message, e.stack);
-        const errorMsg = `⚠️ Connection error: ${e.message || 'Unknown error'}. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>`;
-        addBot(errorMsg);
+            // Save to conversation history
+            if (!S.moduleConversations[moduleId]) {
+                S.moduleConversations[moduleId] = [];
+            }
+            S.moduleConversations[moduleId].push({ role: 'assistant', content: text });
+            saveConversation(moduleId);
+
+            addBot(text);
+
+        } catch (e) {
+            removeTyping();
+            console.error('AI Error:', e);
+            const errorMsg = `⚠️ Connection error: ${e.message || 'Unknown error'}. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>`;
+            addBot(errorMsg, true);
+        }
     }
 }
 
@@ -760,83 +956,110 @@ async function send() {
     document.getElementById('inp').value = '';
     document.getElementById('inp').style.height = 'auto';
 
-    // Add to conversation
-    S.conversation.push({ role: 'user', content: txt });
+    // Save to conversation history
+    if (!S.moduleConversations[S.currentModule]) {
+        S.moduleConversations[S.currentModule] = [];
+    }
+    S.moduleConversations[S.currentModule].push({ role: 'user', content: txt });
 
     // Show typing
     addTyping();
     document.getElementById('sendBtn').disabled = true;
 
     try {
-        const response = await callAnthropic(S.conversation, getSystemPrompt(S.currentModule));
+        const conversation = getConversation(S.currentModule);
+        const response = await callAnthropic(conversation, getSystemPrompt(S.currentModule));
 
         removeTyping();
         document.getElementById('sendBtn').disabled = false;
 
         const text = response.content[0].text;
-        S.conversation.push({ role: 'assistant', content: text });
+        S.moduleConversations[S.currentModule].push({ role: 'assistant', content: text });
+        saveConversation(S.currentModule);
+
         addBot(text);
 
-        // Check if module complete (AI mentions it)
-        if (text.toLowerCase().includes('module complete') ||
-            text.toLowerCase().includes('modul abgeschlossen') ||
-            text.toLowerCase().includes('модуль завершён')) {
-            setTimeout(() => completeModule(S.currentModule), 2000);
+        // Intro module progress tracking
+        if (S.currentModule === 'intro') {
+            const lowerText = txt.toLowerCase();
+
+            // Track which question was answered based on content
+            if (S.introStep === 0 && txt.length > 0) {
+                // Name answered
+                S.profile.name = txt;
+                S.answeredQuestions['name'] = txt;
+                updateIntroProgress(1);
+            } else if (S.introStep === 1 && (lowerText.includes('income') || lowerText.includes('einkommen') || lowerText.includes('доход') || lowerText.includes('exploring') || lowerText.includes('erkunden') || lowerText.includes('vollzeit') || lowerText.includes('full'))) {
+                // Goal answered
+                S.profile.goal = txt;
+                S.answeredQuestions['goal'] = txt;
+                updateIntroProgress(2);
+            } else if (S.introStep === 2 && (lowerText.includes('hour') || lowerText.includes('stunde') || lowerText.includes('час') || lowerText.includes('h/') || lowerText.includes('ч/'))) {
+                // Time answered
+                S.profile.time = txt;
+                S.answeredQuestions['time'] = txt;
+                updateIntroProgress(3);
+            } else if (S.introStep === 3 && (lowerText.includes('beginner') || lowerText.includes('anfänger') || lowerText.includes('новичок') || lowerText.includes('experience') || lowerText.includes('erfahrung') || lowerText.includes('опыт') || lowerText.includes('advanced') || lowerText.includes('fortgeschritten'))) {
+                // Experience answered
+                S.profile.experience = txt;
+                S.answeredQuestions['experience'] = txt;
+                updateIntroProgress(4);
+            }
+
+            saveUserData();
         }
 
     } catch (e) {
         removeTyping();
         document.getElementById('sendBtn').disabled = false;
         console.error('AI Error:', e);
-        console.error('Error details:', e.message, e.stack);
         const errorMsg = `⚠️ Error: ${e.message || 'Unknown error'}. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>`;
-        addBot(errorMsg);
+        addBot(errorMsg, true);
     }
-}
-
-function completeModule(moduleId) {
-    if (!S.completedModules.includes(moduleId)) {
-        S.completedModules.push(moduleId);
-        localStorage.setItem('red_ai_completed', JSON.stringify(S.completedModules));
-    }
-
-    renderModuleList();
-    showCompletionPopup(moduleId);
 }
 
 // ═══════════════════════════════════════════════════════════════
 // UI HELPERS
 // ═══════════════════════════════════════════════════════════════
-function addBot(msg) {
+function addBot(msg, skipButtons = false) {
     const chat = document.getElementById('chat');
     const div = document.createElement('div');
     div.className = 'msg bot';
 
     let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
 
-    // Add quick reply buttons for specific questions in intro module
-    // Only show buttons if there aren't any buttons already visible
-    const hasExistingButtons = document.querySelector('.quick-replies') !== null;
+    // Add quick reply buttons ONLY in intro module for specific questions
+    // AND only if we haven't answered this type of question yet
+    if (!skipButtons && msg.includes('?') && S.currentModule === 'intro') {
+        const msgLower = msg.toLowerCase();
 
-    if (msg.includes('?') && S.currentModule === 'intro' && !hasExistingButtons) {
-        // Detect question type and add appropriate buttons
-        // Skip buttons for name questions - let user type freely
-        const isNameQuestion = msg.toLowerCase().includes('name') ||
-                              msg.toLowerCase().includes('wie lautest') ||
-                              msg.toLowerCase().includes('heißt') ||
-                              msg.toLowerCase().includes('how should') ||
-                              msg.toLowerCase().includes('what\'s your name') ||
-                              msg.toLowerCase().includes('как тебя') ||
-                              msg.toLowerCase().includes('имя');
-
-        if (isNameQuestion) {
-            // No buttons for name questions - user should type their actual name
-        } else if (msg.toLowerCase().includes('ziel') || msg.toLowerCase().includes('goal') || msg.toLowerCase().includes('hauptziel') || msg.toLowerCase().includes('erreichen') || msg.toLowerCase().includes('цел')) {
-            html += `<div class="quick-replies"><button class="quick-btn" onclick="quickReply('${t('sideIncome')}')">${t('sideIncome')}</button><button class="quick-btn" onclick="quickReply('${t('fullTime')}')">${t('fullTime')}</button><button class="quick-btn" onclick="quickReply('${t('exploring')}')">${t('exploring')}</button></div>`;
-        } else if (msg.toLowerCase().includes('zeit') || msg.toLowerCase().includes('time') || msg.toLowerCase().includes('täglich') || msg.toLowerCase().includes('stunden') || msg.toLowerCase().includes('врем')) {
-            html += `<div class="quick-replies"><button class="quick-btn" onclick="quickReply('${t('oneHour')}')">${t('oneHour')}</button><button class="quick-btn" onclick="quickReply('${t('twoThreeHours')}')">${t('twoThreeHours')}</button><button class="quick-btn" onclick="quickReply('${t('fourPlusHours')}')">${t('fourPlusHours')}</button></div>`;
-        } else if (msg.toLowerCase().includes('erfahrung') || msg.toLowerCase().includes('experience') || msg.toLowerCase().includes('kenntnisse') || msg.toLowerCase().includes('wissen') || msg.toLowerCase().includes('опыт')) {
-            html += `<div class="quick-replies"><button class="quick-btn" onclick="quickReply('${t('beginner')}')">${t('beginner')}</button><button class="quick-btn" onclick="quickReply('${t('intermediate')}')">${t('intermediate')}</button><button class="quick-btn" onclick="quickReply('${t('advanced')}')">${t('advanced')}</button></div>`;
+        // Name question - NO buttons (user should type)
+        if ((msgLower.includes('name') || msgLower.includes('heißt') || msgLower.includes('имя')) && !S.answeredQuestions['name']) {
+            // No buttons for name
+        }
+        // Goal question
+        else if ((msgLower.includes('goal') || msgLower.includes('ziel') || msgLower.includes('цел') || msgLower.includes('hauptziel')) && !S.answeredQuestions['goal']) {
+            html += `<div class="quick-replies">
+                <button class="quick-btn" onclick="quickReply('${t('sideIncome')}', 'goal')">${t('sideIncome')}</button>
+                <button class="quick-btn" onclick="quickReply('${t('fullTime')}', 'goal')">${t('fullTime')}</button>
+                <button class="quick-btn" onclick="quickReply('${t('exploring')}', 'goal')">${t('exploring')}</button>
+            </div>`;
+        }
+        // Time question
+        else if ((msgLower.includes('time') || msgLower.includes('zeit') || msgLower.includes('врем') || msgLower.includes('täglich') || msgLower.includes('invest')) && !S.answeredQuestions['time']) {
+            html += `<div class="quick-replies">
+                <button class="quick-btn" onclick="quickReply('${t('oneHour')}', 'time')">${t('oneHour')}</button>
+                <button class="quick-btn" onclick="quickReply('${t('twoThreeHours')}', 'time')">${t('twoThreeHours')}</button>
+                <button class="quick-btn" onclick="quickReply('${t('fourPlusHours')}', 'time')">${t('fourPlusHours')}</button>
+            </div>`;
+        }
+        // Experience question
+        else if ((msgLower.includes('experience') || msgLower.includes('erfahrung') || msgLower.includes('опыт') || msgLower.includes('level') || msgLower.includes('kenntnisse')) && !S.answeredQuestions['experience']) {
+            html += `<div class="quick-replies">
+                <button class="quick-btn" onclick="quickReply('${t('beginner')}', 'experience')">${t('beginner')}</button>
+                <button class="quick-btn" onclick="quickReply('${t('intermediate')}', 'experience')">${t('intermediate')}</button>
+                <button class="quick-btn" onclick="quickReply('${t('advanced')}', 'experience')">${t('advanced')}</button>
+            </div>`;
         }
     }
 
@@ -845,22 +1068,20 @@ function addBot(msg) {
     chat.scrollTop = chat.scrollHeight;
 }
 
-function quickReply(text) {
-    // Remove all quick reply buttons immediately
-    document.querySelectorAll('.quick-replies').forEach(el => el.remove());
+function quickReply(text, questionType) {
+    // Mark question as answered
+    S.answeredQuestions[questionType] = text;
 
-    // Track answers for module progression
-    if (!S.introAnswers) S.introAnswers = 0;
-    S.introAnswers++;
-
-    // After 4 answers, show completion popup
-    if (S.introAnswers >= 4 && S.currentModule === 'intro') {
-        setTimeout(() => showCompletionPopup('intro'), 1500);
-    }
+    // Remove ALL buttons from page
+    document.querySelectorAll('.quick-replies').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-10px)';
+        setTimeout(() => el.remove(), 300);
+    });
 
     // Send the response
     document.getElementById('inp').value = text;
-    send();
+    setTimeout(() => send(), 350);
 }
 
 function addUser(txt, img = null) {
@@ -920,12 +1141,10 @@ fi.addEventListener('change', async (e) => {
     const r = new FileReader();
     r.onload = async (ev) => {
         const base64 = ev.target.result.split(',')[1];
-        S.project.images.push(base64);
 
         addUser('📷 Image uploaded', ev.target.result);
         addTyping();
 
-        // Send image to AI
         try {
             const imageMessage = {
                 role: 'user',
@@ -935,30 +1154,26 @@ fi.addEventListener('change', async (e) => {
                 ]
             };
 
-            const response = await callAnthropic([...S.conversation, imageMessage], getSystemPrompt(S.currentModule));
+            const conversation = getConversation(S.currentModule);
+            const response = await callAnthropic([...conversation, imageMessage], getSystemPrompt(S.currentModule));
 
             removeTyping();
             const text = response.content[0].text;
-            S.conversation.push(imageMessage);
-            S.conversation.push({ role: 'assistant', content: text });
-            addBot(text);
+
+            S.moduleConversations[S.currentModule].push(imageMessage);
+            S.moduleConversations[S.currentModule].push({ role: 'assistant', content: text });
+            saveConversation(S.currentModule);
+
+            addBot(text, true);
 
         } catch (e) {
             removeTyping();
             console.error('Image analysis error:', e);
-            addBot("I received your image! I'll analyze it to help with your project.");
+            addBot("I received your image! I'll analyze it to help with your project.", true);
         }
     };
     r.readAsDataURL(f);
 });
-
-// Load completed modules from storage
-const saved = localStorage.getItem('red_ai_completed');
-if (saved) {
-    try {
-        S.completedModules = JSON.parse(saved);
-    } catch (e) {}
-}
 
 // ═══════════════════════════════════════════════════════════════
 // CONFETTI ANIMATION
@@ -1014,7 +1229,6 @@ function animateConfetti() {
         p.rotation += p.rotationSpeed;
         p.vy += 0.1; // Gravity
 
-        // Remove particles that fall off screen
         if (p.y > confettiCanvas.height + 50) {
             confettiParticles.splice(index, 1);
         }
@@ -1037,7 +1251,6 @@ function launchConfetti() {
 // COMPLETION POPUP
 // ═══════════════════════════════════════════════════════════════
 function showCompletionPopup(moduleId) {
-    // Update text to current language
     document.getElementById('completionTitle').textContent = t('congratulations');
     document.getElementById('completionSubtitle').textContent = t('moduleComplete');
     document.getElementById('completionMessage').textContent = t('infoSaved');
@@ -1049,25 +1262,20 @@ function showCompletionPopup(moduleId) {
     document.getElementById('corrField3').textContent = t('timeAvailable');
     document.getElementById('corrField4').textContent = t('experience');
 
-    // Calculate progress
     const total = Object.keys(MODULES).length;
     const completed = S.completedModules.length;
     const percentage = Math.round((completed / total) * 100);
 
-    document.getElementById('progressCompleteLabel').textContent = `${t('apiTitle')}: ${percentage}%`;
+    document.getElementById('progressCompleteLabel').textContent = `${t('progress')}: ${percentage}%`;
 
-    // Show popup with animation
     document.getElementById('completionOv').classList.add('show');
 
-    // Launch confetti
     setTimeout(launchConfetti, 300);
 
-    // Animate progress bar
     setTimeout(() => {
         document.getElementById('progressCompleteFill').style.width = percentage + '%';
     }, 800);
 
-    // Store the completed module
     S.nextModuleId = getNextModuleId(moduleId);
 }
 
@@ -1102,20 +1310,17 @@ function correctField(field) {
     document.getElementById('correctionOptions').classList.remove('show');
     document.getElementById('completionActions').style.display = 'flex';
 
-    // Reset intro answers so the module can be retaken
-    S.introAnswers = 0;
+    // Reset the specific question
+    delete S.answeredQuestions[field];
 
-    // Ask AI to focus on correcting that specific field
-    const fieldMessages = {
-        name: { en: 'What is your name?', de: 'Wie heißt du?', ru: 'Как тебя зовут?' },
-        goal: { en: 'What is your main goal?', de: 'Was ist dein Hauptziel?', ru: 'Какая твоя главная цель?' },
-        time: { en: 'How much time can you invest daily?', de: 'Wie viel Zeit kannst du täglich investieren?', ru: 'Сколько времени ты можешь уделять?' },
-        experience: { en: 'What is your experience level with AI?', de: 'Wie ist dein Erfahrungslevel mit AI?', ru: 'Какой у тебя уровень опыта с AI?' }
-    };
+    // Reset intro step based on field
+    const stepMap = { name: 0, goal: 1, time: 2, experience: 3 };
+    S.introStep = stepMap[field] || 0;
+    updateIntroProgress(S.introStep);
 
-    setTimeout(() => {
-        addBot(fieldMessages[field][S.lang] || fieldMessages[field].en);
-    }, 500);
+    // Clear conversation and restart
+    S.moduleConversations['intro'] = [];
+    selectModule('intro');
 }
 
 window.addEventListener('resize', () => {
