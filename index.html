@@ -1155,6 +1155,12 @@ function addBot(msg, skipButtons = false) {
                 <button class="quick-btn" onclick="handleModuleComplete()" style="background: #10b981; border-color: #10b981;">✅ Modul abschließen</button>
             </div>`;
         }
+        // "Verstanden" button for interactive lessons
+        else if (msgLower.includes('verstanden') || msgLower.includes('understood') || msgLower.includes('понял')) {
+            html += `<div class="quick-replies">
+                <button class="quick-btn" onclick="quickReply('Verstanden ✓', 'understood')" style="background: #10b981; border-color: #10b981;">✅ Verstanden</button>
+            </div>`;
+        }
         // Intro module specific buttons - only show if NOT completion question
         else if (S.currentModule === 'intro') {
             // Name question - NO buttons (user should type)
