@@ -845,7 +845,12 @@ Ask ONE question at a time in this order:
 After each answer, give a brief encouraging response and ask the next question.
 After all 4 questions are answered, give them a motivating summary about their learning path.
 
-IMPORTANT: After the summary, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+CRITICAL: After the summary, you MUST ask EXACTLY this question (translate to user's language):
+German: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+English: "Would you like to repeat something or complete the module?"
+Russian: "Хочешь что-то повторить или завершить модуль?"
+
+This exact phrasing triggers buttons - DO NOT rephrase it!
 DO NOT auto-complete - wait for user confirmation!
 
 Keep it conversational and encouraging. Always respond in {LANG} language.`,
@@ -869,58 +874,106 @@ TOPICS TO COVER (one at a time):
 After ALL topics are covered, give a SHORT quiz (3 multiple choice questions) to test understanding.
 After quiz is complete, give congratulations and a brief summary.
 
-IMPORTANT: After the summary, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
-DO NOT auto-complete - wait for user confirmation!
+CRITICAL: After the summary, you MUST ask EXACTLY this question (translate to user's language):
+German: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+English: "Would you like to repeat something or complete the module?"
+Russian: "Хочешь что-то повторить или завершить модуль?"
+
+This exact phrasing triggers buttons - DO NOT rephrase it!
 
 Keep each explanation SHORT (3-4 sentences max), PRACTICAL, and income-focused.
 Always respond in {LANG} language.`,
 
     tokens: `You are teaching about tokens in AI. Explain what tokens are, how they work, pricing, and why it matters for costs.
 Give practical examples. Include a quiz about token counts.
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     context: `You are teaching about context in AI. Explain why context is crucial for quality outputs, how to structure good prompts.
 Be practical with examples from real use cases.
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     voiceovers: `You are teaching the AI Voiceovers income method. Cover: tools (ElevenLabs, Play.ht, Murf), use cases, getting started, income potential (€500-2000/month).
 Be specific and actionable.
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     imagegen: `You are teaching AI Image Generation. Cover: tools (Midjourney, DALL-E, Stable Diffusion, Leonardo.ai), prompting tips, income potential.
 Focus on practical money-making applications.
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     videogen: `You are teaching AI Video Generation. Cover: tools (Runway, Pika, HeyGen), use cases (faceless YouTube, shorts), income potential (€1000-5000/month).
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     chatbots: `You are teaching AI Chatbots. Cover: business applications, customer service, lead gen, tools, income potential (€2000-10000/month).
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     automation: `You are teaching AI Automation. Cover: tools (Make.com, Zapier, n8n), workflows, business applications, income potential (€1500-5000/month).
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     copywriting: `You are teaching AI Copywriting. Cover: frameworks (AIDA, PAS, BAB), tools, income potential (€1000-5000/month), getting first clients.
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     websites: `You are teaching AI Website building. Cover: tools (Framer, Webflow, v0.dev, Cursor), no-code options, income potential (€1000-4000/month).
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     research: `You are teaching AI Research services. Cover: market research, competitor analysis, data processing, income potential (€1000-4000/month).
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     consulting: `You are teaching AI Consulting. Cover: strategy, implementation, training, pricing models (hourly €100-300, project €1000-10000), highest income potential (€3000-20000/month).
-At the end, ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+
+CRITICAL: At the end, ask EXACTLY (in user's language):
+DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+EN: "Would you like to repeat something or complete the module?"
+RU: "Хочешь что-то повторить или завершить модуль?"
 Always respond in {LANG} language.`,
 
     choose_path: `You are helping the user choose their AI income path. They've learned all 9 methods. Help them pick 1-3 that fit their profile.
@@ -1092,8 +1145,11 @@ function addBot(msg, skipButtons = false) {
         const msgLower = msg.toLowerCase();
 
         // Module completion buttons - show when AI asks if user wants to repeat or finish
-        if ((msgLower.includes('wiederholen') || msgLower.includes('repeat') || msgLower.includes('повторить')) &&
-            (msgLower.includes('abschließen') || msgLower.includes('finish') || msgLower.includes('complete') || msgLower.includes('завершить'))) {
+        // Check for various phrasings of the completion question
+        const hasRepeatKeyword = msgLower.includes('wiederholen') || msgLower.includes('repeat') || msgLower.includes('повторить') || msgLower.includes('fragen');
+        const hasFinishKeyword = msgLower.includes('abschließen') || msgLower.includes('finish') || msgLower.includes('complete') || msgLower.includes('завершить') || msgLower.includes('modul');
+
+        if (hasRepeatKeyword && hasFinishKeyword) {
             html += `<div class="quick-replies">
                 <button class="quick-btn" onclick="handleModuleRepeat()" style="background: #f59e0b; border-color: #f59e0b;">🔄 ${t('repeatModule')}</button>
                 <button class="quick-btn" onclick="handleModuleComplete()" style="background: #10b981; border-color: #10b981;">✅ Modul abschließen</button>
