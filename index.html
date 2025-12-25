@@ -180,10 +180,78 @@
         }
 
         #fi{display:none}
+
+        /* Module Completion Popup */
+        .completion-overlay{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px)}
+        .completion-overlay.show{display:flex;animation:fadeIn 0.5s ease}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+        .completion-box{max-width:600px;background:var(--surface-solid);border:2px solid var(--accent);border-radius:24px;padding:48px;text-align:center;position:relative;animation:popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)}
+        @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+        .completion-icon{width:100px;height:100px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:48px;animation:bounce 1s ease infinite;box-shadow:0 0 100px var(--accent-g)}
+        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+
+        .completion-title{font-family:'Syne';font-size:32px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+        .completion-subtitle{font-family:'Syne';font-size:18px;font-weight:600;color:var(--text);margin-bottom:16px}
+        .completion-message{color:var(--text-s);font-size:15px;line-height:1.7;margin-bottom:32px}
+
+        .progress-complete{background:var(--surface);border-radius:12px;padding:20px;margin-bottom:32px}
+        .progress-complete-label{font-size:13px;color:var(--text-s);margin-bottom:12px}
+        .progress-complete-bar{height:12px;background:var(--border);border-radius:6px;overflow:hidden;position:relative}
+        .progress-complete-fill{height:100%;background:var(--grad);border-radius:6px;transition:width 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);box-shadow:0 0 20px var(--accent-g)}
+
+        .completion-actions{display:flex;gap:12px}
+        .completion-btn{flex:1;padding:16px;border-radius:12px;font-family:'Syne';font-weight:600;font-size:15px;cursor:pointer;transition:all 0.3s;border:none}
+        .completion-btn.primary{background:var(--grad);color:#fff}
+        .completion-btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 24px -8px var(--accent-g)}
+        .completion-btn.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+        .completion-btn.secondary:hover{background:var(--elevated);border-color:var(--accent)}
+
+        /* Confetti Canvas */
+        #confetti{position:fixed;inset:0;z-index:1999;pointer-events:none;display:none}
+        #confetti.show{display:block}
+
+        /* Correction Options */
+        .correction-options{display:none;flex-direction:column;gap:12px;margin-top:24px}
+        .correction-options.show{display:flex}
+        .correction-btn{background:var(--elevated);border:1px solid var(--border);padding:14px;border-radius:12px;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter'}
+        .correction-btn:hover{background:var(--accent-s);border-color:var(--accent);transform:translateX(4px)}
     </style>
 </head>
 <body>
     <canvas id="stars"></canvas>
+    <canvas id="confetti"></canvas>
+
+    <!-- Module Completion Popup -->
+    <div class="completion-overlay" id="completionOv">
+        <div class="completion-box">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-title" id="completionTitle">Glückwunsch!</div>
+            <div class="completion-subtitle" id="completionSubtitle">Modul Abgeschlossen</div>
+            <div class="completion-message" id="completionMessage">Deine Informationen wurden gespeichert und ich habe deinen personalisierten Lernpfad vorbereitet!</div>
+
+            <div class="progress-complete">
+                <div class="progress-complete-label" id="progressCompleteLabel">Fortschritt: 7%</div>
+                <div class="progress-complete-bar">
+                    <div class="progress-complete-fill" id="progressCompleteFill" style="width:0%"></div>
+                </div>
+            </div>
+
+            <div class="completion-actions" id="completionActions">
+                <button class="completion-btn primary" onclick="continueToNextModule()" id="continueBtn">Weiter zum nächsten Modul →</button>
+                <button class="completion-btn secondary" onclick="showCorrectionOptions()" id="repeatBtn">🔄 Modul wiederholen</button>
+            </div>
+
+            <div class="correction-options" id="correctionOptions">
+                <div style="font-size:14px;color:var(--text-s);margin-bottom:8px;" id="correctionTitle">Welchen Bereich möchtest du korrigieren?</div>
+                <button class="correction-btn" onclick="correctField('name')">👤 <span id="corrField1">Dein Name</span></button>
+                <button class="correction-btn" onclick="correctField('goal')">🎯 <span id="corrField2">Dein Ziel</span></button>
+                <button class="correction-btn" onclick="correctField('time')">⏰ <span id="corrField3">Verfügbare Zeit</span></button>
+                <button class="correction-btn" onclick="correctField('experience')">📚 <span id="corrField4">Erfahrungslevel</span></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Language Selection -->
     <div class="overlay" id="langOv">
@@ -351,7 +419,28 @@ const i18n = {
         apiBtn: 'Start Journey →',
         apiError: 'Invalid API key. Please check and try again.',
         apiHelp: "Don't have an API key?",
-        apiHelpLink: 'Get one from Anthropic →'
+        apiHelpLink: 'Get one from Anthropic →',
+        // Quick reply buttons
+        sideIncome: '💰 Side Income',
+        fullTime: '🚀 Full-time',
+        exploring: '🔍 Exploring',
+        oneHour: '1h/day',
+        twoThreeHours: '2-3h/day',
+        fourPlusHours: '4+h/day',
+        beginner: '🌱 Beginner',
+        intermediate: '📚 Intermediate',
+        advanced: '🚀 Advanced',
+        // Completion popup
+        congratulations: 'Congratulations!',
+        moduleComplete: 'Module Complete',
+        infoSaved: 'Your information has been saved and I\'ve prepared your personalized learning path!',
+        continueNext: 'Continue to Next Module →',
+        repeatModule: '🔄 Repeat Module',
+        whatToCorrect: 'What would you like to correct?',
+        yourName: 'Your Name',
+        yourGoal: 'Your Goal',
+        timeAvailable: 'Available Time',
+        experience: 'Experience Level'
     },
     de: {
         apiTitle: 'Verbinde deine AI',
@@ -359,7 +448,28 @@ const i18n = {
         apiBtn: 'Reise Starten →',
         apiError: 'Ungültiger API Key. Bitte prüfen.',
         apiHelp: 'Noch keinen API Key?',
-        apiHelpLink: 'Hol dir einen bei Anthropic →'
+        apiHelpLink: 'Hol dir einen bei Anthropic →',
+        // Quick reply buttons
+        sideIncome: '💰 Nebeneinkommen',
+        fullTime: '🚀 Vollzeit',
+        exploring: '🔍 Erkunden',
+        oneHour: '1h/Tag',
+        twoThreeHours: '2-3h/Tag',
+        fourPlusHours: '4+h/Tag',
+        beginner: '🌱 Anfänger',
+        intermediate: '📚 Mittel',
+        advanced: '🚀 Fortgeschritten',
+        // Completion popup
+        congratulations: 'Glückwunsch!',
+        moduleComplete: 'Modul Abgeschlossen',
+        infoSaved: 'Deine Informationen wurden gespeichert und ich habe deinen personalisierten Lernpfad vorbereitet!',
+        continueNext: 'Weiter zum nächsten Modul →',
+        repeatModule: '🔄 Modul wiederholen',
+        whatToCorrect: 'Welchen Bereich möchtest du korrigieren?',
+        yourName: 'Dein Name',
+        yourGoal: 'Dein Ziel',
+        timeAvailable: 'Verfügbare Zeit',
+        experience: 'Erfahrungslevel'
     },
     ru: {
         apiTitle: 'Подключи свой AI',
@@ -367,7 +477,28 @@ const i18n = {
         apiBtn: 'Начать Путь →',
         apiError: 'Неверный API ключ. Проверь.',
         apiHelp: 'Нет API ключа?',
-        apiHelpLink: 'Получи у Anthropic →'
+        apiHelpLink: 'Получи у Anthropic →',
+        // Quick reply buttons
+        sideIncome: '💰 Доп. доход',
+        fullTime: '🚀 Полная занятость',
+        exploring: '🔍 Изучение',
+        oneHour: '1ч/день',
+        twoThreeHours: '2-3ч/день',
+        fourPlusHours: '4+ч/день',
+        beginner: '🌱 Новичок',
+        intermediate: '📚 Средний',
+        advanced: '🚀 Продвинутый',
+        // Completion popup
+        congratulations: 'Поздравляем!',
+        moduleComplete: 'Модуль Завершён',
+        infoSaved: 'Твоя информация сохранена и я подготовил персональный план обучения!',
+        continueNext: 'Продолжить →',
+        repeatModule: '🔄 Повторить',
+        whatToCorrect: 'Что хочешь исправить?',
+        yourName: 'Твоё имя',
+        yourGoal: 'Твоя цель',
+        timeAvailable: 'Доступное время',
+        experience: 'Уровень опыта'
     }
 };
 
@@ -670,18 +801,7 @@ function completeModule(moduleId) {
     }
 
     renderModuleList();
-
-    // Move to next module
-    const moduleIds = Object.keys(MODULES);
-    const currentIndex = moduleIds.indexOf(moduleId);
-    if (currentIndex < moduleIds.length - 1) {
-        const nextId = moduleIds[currentIndex + 1];
-        setTimeout(() => {
-            if (confirm(`Great! Ready for the next module: ${MODULES[nextId].name[S.lang]}?`)) {
-                selectModule(nextId);
-            }
-        }, 1000);
-    }
+    showCompletionPopup(moduleId);
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -694,20 +814,26 @@ function addBot(msg) {
 
     let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
 
-    // Add quick reply buttons for ANY question in intro module
+    // Add quick reply buttons for specific questions in intro module
     if (msg.includes('?') && S.currentModule === 'intro') {
         // Detect question type and add appropriate buttons
-        if (msg.toLowerCase().includes('name') || msg.toLowerCase().includes('wie lautest') || msg.toLowerCase().includes('heißt')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Roman\')">Roman</button><button class="quick-btn" onclick="quickReply(\'Anderer Name\')">Anderer Name</button></div>';
-        } else if (msg.toLowerCase().includes('ziel') || msg.toLowerCase().includes('goal') || msg.toLowerCase().includes('hauptziel') || msg.toLowerCase().includes('erreichen')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Nebeneinkommen aufbauen\')">💰 Nebeneinkommen</button><button class="quick-btn" onclick="quickReply(\'Vollzeit Einkommen\')">🚀 Vollzeit</button><button class="quick-btn" onclick="quickReply(\'Erstmal erkunden\')">🔍 Erkunden</button></div>';
-        } else if (msg.toLowerCase().includes('zeit') || msg.toLowerCase().includes('time') || msg.toLowerCase().includes('täglich') || msg.toLowerCase().includes('stunden')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'1 Stunde täglich\')">1h/Tag</button><button class="quick-btn" onclick="quickReply(\'2-3 Stunden täglich\')">2-3h/Tag</button><button class="quick-btn" onclick="quickReply(\'4+ Stunden täglich\')">4+h/Tag</button></div>';
-        } else if (msg.toLowerCase().includes('erfahrung') || msg.toLowerCase().includes('experience') || msg.toLowerCase().includes('kenntnisse') || msg.toLowerCase().includes('wissen')) {
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Absoluter Anfänger\')">🌱 Anfänger</button><button class="quick-btn" onclick="quickReply(\'Etwas Erfahrung\')">📚 Mittel</button><button class="quick-btn" onclick="quickReply(\'Fortgeschritten\')">🚀 Fortgeschritten</button></div>';
-        } else {
-            // Generic buttons for any other question
-            html += '<div class="quick-replies"><button class="quick-btn" onclick="quickReply(\'Ja\')">✓ Ja</button><button class="quick-btn" onclick="quickReply(\'Nein\')">✗ Nein</button><button class="quick-btn" onclick="quickReply(\'Weiß nicht\')">🤔 Weiß nicht</button></div>';
+        // Skip buttons for name questions - let user type freely
+        const isNameQuestion = msg.toLowerCase().includes('name') ||
+                              msg.toLowerCase().includes('wie lautest') ||
+                              msg.toLowerCase().includes('heißt') ||
+                              msg.toLowerCase().includes('how should') ||
+                              msg.toLowerCase().includes('what\'s your name') ||
+                              msg.toLowerCase().includes('как тебя') ||
+                              msg.toLowerCase().includes('имя');
+
+        if (isNameQuestion) {
+            // No buttons for name questions - user should type their actual name
+        } else if (msg.toLowerCase().includes('ziel') || msg.toLowerCase().includes('goal') || msg.toLowerCase().includes('hauptziel') || msg.toLowerCase().includes('erreichen') || msg.toLowerCase().includes('цел')) {
+            html += `<div class="quick-replies"><button class="quick-btn" onclick="quickReply('${t('sideIncome')}')">${t('sideIncome')}</button><button class="quick-btn" onclick="quickReply('${t('fullTime')}')">${t('fullTime')}</button><button class="quick-btn" onclick="quickReply('${t('exploring')}')">${t('exploring')}</button></div>`;
+        } else if (msg.toLowerCase().includes('zeit') || msg.toLowerCase().includes('time') || msg.toLowerCase().includes('täglich') || msg.toLowerCase().includes('stunden') || msg.toLowerCase().includes('врем')) {
+            html += `<div class="quick-replies"><button class="quick-btn" onclick="quickReply('${t('oneHour')}')">${t('oneHour')}</button><button class="quick-btn" onclick="quickReply('${t('twoThreeHours')}')">${t('twoThreeHours')}</button><button class="quick-btn" onclick="quickReply('${t('fourPlusHours')}')">${t('fourPlusHours')}</button></div>`;
+        } else if (msg.toLowerCase().includes('erfahrung') || msg.toLowerCase().includes('experience') || msg.toLowerCase().includes('kenntnisse') || msg.toLowerCase().includes('wissen') || msg.toLowerCase().includes('опыт')) {
+            html += `<div class="quick-replies"><button class="quick-btn" onclick="quickReply('${t('beginner')}')">${t('beginner')}</button><button class="quick-btn" onclick="quickReply('${t('intermediate')}')">${t('intermediate')}</button><button class="quick-btn" onclick="quickReply('${t('advanced')}')">${t('advanced')}</button></div>`;
         }
     }
 
@@ -724,9 +850,9 @@ function quickReply(text) {
     if (!S.introAnswers) S.introAnswers = 0;
     S.introAnswers++;
 
-    // After 4 answers, unlock next module
+    // After 4 answers, show completion popup
     if (S.introAnswers >= 4 && S.currentModule === 'intro') {
-        unlockModule('what_is_ai');
+        setTimeout(() => showCompletionPopup('intro'), 1500);
     }
 
     // Send the response
@@ -830,6 +956,171 @@ if (saved) {
         S.completedModules = JSON.parse(saved);
     } catch (e) {}
 }
+
+// ═══════════════════════════════════════════════════════════════
+// CONFETTI ANIMATION
+// ═══════════════════════════════════════════════════════════════
+const confettiCanvas = document.getElementById('confetti');
+const confettiCtx = confettiCanvas.getContext('2d');
+let confettiParticles = [];
+
+function initConfetti() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    confettiParticles = [];
+
+    const colors = ['#dc2626', '#ef4444', '#f87171', '#fca5a5', '#fee2e2', '#ffd700', '#ffed4e'];
+
+    for (let i = 0; i < 150; i++) {
+        confettiParticles.push({
+            x: Math.random() * confettiCanvas.width,
+            y: Math.random() * confettiCanvas.height - confettiCanvas.height,
+            vx: (Math.random() - 0.5) * 3,
+            vy: Math.random() * 3 + 2,
+            rotation: Math.random() * 360,
+            rotationSpeed: (Math.random() - 0.5) * 10,
+            size: Math.random() * 8 + 4,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            shape: Math.random() > 0.5 ? 'rect' : 'circle'
+        });
+    }
+}
+
+function animateConfetti() {
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    confettiParticles.forEach((p, index) => {
+        confettiCtx.save();
+        confettiCtx.translate(p.x, p.y);
+        confettiCtx.rotate((p.rotation * Math.PI) / 180);
+
+        confettiCtx.fillStyle = p.color;
+
+        if (p.shape === 'rect') {
+            confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+        } else {
+            confettiCtx.beginPath();
+            confettiCtx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
+            confettiCtx.fill();
+        }
+
+        confettiCtx.restore();
+
+        p.x += p.vx;
+        p.y += p.vy;
+        p.rotation += p.rotationSpeed;
+        p.vy += 0.1; // Gravity
+
+        // Remove particles that fall off screen
+        if (p.y > confettiCanvas.height + 50) {
+            confettiParticles.splice(index, 1);
+        }
+    });
+
+    if (confettiParticles.length > 0) {
+        requestAnimationFrame(animateConfetti);
+    } else {
+        confettiCanvas.classList.remove('show');
+    }
+}
+
+function launchConfetti() {
+    confettiCanvas.classList.add('show');
+    initConfetti();
+    animateConfetti();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMPLETION POPUP
+// ═══════════════════════════════════════════════════════════════
+function showCompletionPopup(moduleId) {
+    // Update text to current language
+    document.getElementById('completionTitle').textContent = t('congratulations');
+    document.getElementById('completionSubtitle').textContent = t('moduleComplete');
+    document.getElementById('completionMessage').textContent = t('infoSaved');
+    document.getElementById('continueBtn').textContent = t('continueNext');
+    document.getElementById('repeatBtn').textContent = t('repeatModule');
+    document.getElementById('correctionTitle').textContent = t('whatToCorrect');
+    document.getElementById('corrField1').textContent = t('yourName');
+    document.getElementById('corrField2').textContent = t('yourGoal');
+    document.getElementById('corrField3').textContent = t('timeAvailable');
+    document.getElementById('corrField4').textContent = t('experience');
+
+    // Calculate progress
+    const total = Object.keys(MODULES).length;
+    const completed = S.completedModules.length;
+    const percentage = Math.round((completed / total) * 100);
+
+    document.getElementById('progressCompleteLabel').textContent = `${t('apiTitle')}: ${percentage}%`;
+
+    // Show popup with animation
+    document.getElementById('completionOv').classList.add('show');
+
+    // Launch confetti
+    setTimeout(launchConfetti, 300);
+
+    // Animate progress bar
+    setTimeout(() => {
+        document.getElementById('progressCompleteFill').style.width = percentage + '%';
+    }, 800);
+
+    // Store the completed module
+    S.nextModuleId = getNextModuleId(moduleId);
+}
+
+function getNextModuleId(currentId) {
+    const moduleIds = Object.keys(MODULES);
+    const currentIndex = moduleIds.indexOf(currentId);
+    if (currentIndex < moduleIds.length - 1) {
+        return moduleIds[currentIndex + 1];
+    }
+    return null;
+}
+
+function continueToNextModule() {
+    document.getElementById('completionOv').classList.remove('show');
+    document.getElementById('correctionOptions').classList.remove('show');
+    document.getElementById('completionActions').style.display = 'flex';
+
+    if (S.nextModuleId) {
+        setTimeout(() => {
+            selectModule(S.nextModuleId);
+        }, 500);
+    }
+}
+
+function showCorrectionOptions() {
+    document.getElementById('completionActions').style.display = 'none';
+    document.getElementById('correctionOptions').classList.add('show');
+}
+
+function correctField(field) {
+    document.getElementById('completionOv').classList.remove('show');
+    document.getElementById('correctionOptions').classList.remove('show');
+    document.getElementById('completionActions').style.display = 'flex';
+
+    // Reset intro answers so the module can be retaken
+    S.introAnswers = 0;
+
+    // Ask AI to focus on correcting that specific field
+    const fieldMessages = {
+        name: { en: 'What is your name?', de: 'Wie heißt du?', ru: 'Как тебя зовут?' },
+        goal: { en: 'What is your main goal?', de: 'Was ist dein Hauptziel?', ru: 'Какая твоя главная цель?' },
+        time: { en: 'How much time can you invest daily?', de: 'Wie viel Zeit kannst du täglich investieren?', ru: 'Сколько времени ты можешь уделять?' },
+        experience: { en: 'What is your experience level with AI?', de: 'Wie ist dein Erfahrungslevel mit AI?', ru: 'Какой у тебя уровень опыта с AI?' }
+    };
+
+    setTimeout(() => {
+        addBot(fieldMessages[field][S.lang] || fieldMessages[field].en);
+    }, 500);
+}
+
+window.addEventListener('resize', () => {
+    if (confettiCanvas.classList.contains('show')) {
+        confettiCanvas.width = window.innerWidth;
+        confettiCanvas.height = window.innerHeight;
+    }
+});
 </script>
 </body>
 </html>
