@@ -343,6 +343,11 @@
                 </div>
             </div>
             <div class="sidebar-modules" id="moduleList"></div>
+            <div style="padding: 20px; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto;">
+                <button onclick="confirmDeleteAll()" style="width: 100%; padding: 12px; background: #dc2626; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;">
+                    🗑️ <span id="deleteAllBtn">Alles löschen</span>
+                </button>
+            </div>
         </aside>
 
         <main class="main">
@@ -501,7 +506,13 @@ const i18n = {
         stepName: 'Name',
         stepGoal: 'Goal',
         stepTime: 'Time',
-        stepExperience: 'Experience'
+        stepExperience: 'Experience',
+        // Delete all
+        deleteAllBtn: 'Delete Everything',
+        deleteWarningTitle: 'Warning!',
+        deleteWarningText: 'All your data will be deleted and you will start from the beginning. Are you sure?',
+        deleteYes: 'Yes, delete everything',
+        deleteNo: 'Cancel'
     },
     de: {
         apiTitle: 'Verbinde deine AI',
@@ -538,7 +549,13 @@ const i18n = {
         stepName: 'Name',
         stepGoal: 'Ziel',
         stepTime: 'Zeit',
-        stepExperience: 'Erfahrung'
+        stepExperience: 'Erfahrung',
+        // Delete all
+        deleteAllBtn: 'Alles löschen',
+        deleteWarningTitle: 'Vorsicht!',
+        deleteWarningText: 'Alle deine Daten werden gelöscht und du startest von vorn. Bist du sicher?',
+        deleteYes: 'Ja, alles löschen',
+        deleteNo: 'Abbrechen'
     },
     ru: {
         apiTitle: 'Подключи свой AI',
@@ -575,7 +592,13 @@ const i18n = {
         stepName: 'Имя',
         stepGoal: 'Цель',
         stepTime: 'Время',
-        stepExperience: 'Опыт'
+        stepExperience: 'Опыт',
+        // Delete all
+        deleteAllBtn: 'Удалить всё',
+        deleteWarningTitle: 'Внимание!',
+        deleteWarningText: 'Все твои данные будут удалены и ты начнёшь с начала. Ты уверен?',
+        deleteYes: 'Да, удалить всё',
+        deleteNo: 'Отмена'
     }
 };
 
@@ -827,8 +850,26 @@ After all 4 questions are answered, give them a motivating summary and tell them
 
 Keep it conversational and encouraging. Always respond in {LANG} language.`,
 
-    what_is_ai: `You are teaching about AI basics. Explain what AI is, different types (LLMs, Image AI, Voice AI, Video AI), and their applications.
-Include interactive quizzes. Be educational but keep it practical and income-focused.
+    what_is_ai: `You are teaching about AI basics in a highly interactive, step-by-step format.
+
+IMPORTANT TEACHING FORMAT:
+1. Present ONE small topic/concept at a time (max 3-4 sentences)
+2. Give 1-2 concrete examples
+3. Then STOP and ask: "Verstanden? Klick auf 'Verstanden ✓' um weiterzumachen"
+4. Wait for user to respond before continuing to next micro-topic
+
+TOPICS TO COVER (one at a time):
+1. What is AI? (Definition + 1 example)
+2. Large Language Models / LLMs (What they do + example like ChatGPT)
+3. Image AI (What it does + example like Midjourney)
+4. Voice AI (What it does + example like ElevenLabs)
+5. Video AI (What it does + example like Runway)
+6. Tokens (Brief intro - will be covered in detail in next module)
+
+After ALL topics are covered, give a SHORT quiz (3 multiple choice questions) to test understanding.
+After quiz is complete, congratulate them and tell them to move to the next module.
+
+Keep each explanation SHORT (3-4 sentences max), PRACTICAL, and income-focused.
 Always respond in {LANG} language.`,
 
     tokens: `You are teaching about tokens in AI. Explain what tokens are, how they work, pricing, and why it matters for costs.
@@ -1333,6 +1374,62 @@ window.addEventListener('resize', () => {
         confettiCanvas.height = window.innerHeight;
     }
 });
+
+// ═══════════════════════════════════════════════════════════════
+// DELETE ALL DATA
+// ═══════════════════════════════════════════════════════════════
+function confirmDeleteAll() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:99999;display:flex;align-items:center;justify-content:center;animation:fadeIn 0.3s;';
+
+    const modal = document.createElement('div');
+    modal.style.cssText = 'background:#1a1a1a;border:2px solid #dc2626;border-radius:16px;padding:32px;max-width:400px;text-align:center;animation:scaleIn 0.3s;';
+
+    modal.innerHTML = `
+        <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+        <h2 style="color:#dc2626;margin:0 0 16px 0;font-size:24px;">${t('deleteWarningTitle')}</h2>
+        <p style="color:#fff;margin:0 0 24px 0;line-height:1.6;">${t('deleteWarningText')}</p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+            <button onclick="this.closest('[style*=fixed]').remove()" style="padding:12px 24px;background:#333;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;">
+                ${t('deleteNo')}
+            </button>
+            <button onclick="deleteAllData()" style="padding:12px 24px;background:#dc2626;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-size:14px;">
+                ${t('deleteYes')}
+            </button>
+        </div>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+}
+
+function deleteAllData() {
+    // Remove user data from localStorage
+    if (S.apiKey) {
+        localStorage.removeItem(getUserDataKey());
+    }
+
+    // Reset global state
+    S.completedModules = [];
+    S.profile = {};
+    S.introStep = 0;
+    S.answeredQuestions = {};
+    S.moduleConversations = {};
+    S.currentModule = 'intro';
+
+    // Close modal
+    document.querySelectorAll('[style*="fixed"]').forEach(el => el.remove());
+
+    // Reload to intro
+    document.getElementById('chat').innerHTML = '';
+    renderModuleList();
+    selectModule('intro');
+
+    // Show success message
+    setTimeout(() => {
+        addBot('✅ Alle Daten wurden gelöscht. Willkommen zurück!', true);
+    }, 500);
+}
 </script>
 </body>
 </html>
