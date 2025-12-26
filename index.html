@@ -1671,7 +1671,15 @@ function handleModuleComplete() {
         setTimeout(() => el.remove(), 300);
     });
 
-    // Show completion popup with confetti
+    // Add user message "Modul abschließen"
+    const completeTexts = {
+        de: 'Modul abschließen',
+        en: 'Complete module',
+        ru: 'Завершить модуль'
+    };
+    addUser(completeTexts[S.lang] || completeTexts.de);
+
+    // Show completion popup with confetti immediately (no AI response needed)
     setTimeout(() => {
         completeModule(S.currentModule);
     }, 500);
