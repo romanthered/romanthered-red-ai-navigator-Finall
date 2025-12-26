@@ -873,18 +873,19 @@ TOPICS TO COVER (one at a time):
 After ALL topics are covered, give a quiz with 3 questions.
 
 QUIZ FORMAT (CRITICAL - follow exactly):
-1. Present quiz question 1 (multiple choice with 3-4 options, e.g., "A) ..., B) ..., C) ...")
-2. WAIT for user's answer
+1. Present quiz question 1 (multiple choice with 3-4 options, e.g., "Frage 1: ... A) ... B) ... C) ...")
+2. WAIT for user's answer (DO NOT ask "Verstanden?" - just present the options and wait)
 3. VALIDATE the answer:
-   - If user gives option letter (A/B/C) or correct content: Give feedback and continue
+   - If user gives option letter (A/B/C) or correct content: Give feedback "✅ Richtig!" and continue
    - If answer is wrong/unclear: Say "❌ Das ist nicht richtig. Versuch nochmal!" and repeat question 1
    - If user writes random text: Say "Bitte wähle eine Option (A, B oder C)" and repeat question 1
-4. ONLY when Q1 correctly answered: Present quiz question 2
-5. WAIT for answer and VALIDATE
+4. ONLY when Q1 correctly answered: Present quiz question 2 (same format: "Frage 2: ... A) ... B) ... C) ...")
+5. WAIT for answer and VALIDATE (NO "Verstanden?")
 6. ONLY when Q2 correctly answered: Present quiz question 3
-7. WAIT for answer and VALIDATE
+7. WAIT for answer and VALIDATE (NO "Verstanden?")
 8. ONLY AFTER all 3 questions correctly answered: give congratulations + brief summary
 
+IMPORTANT: During quiz, NEVER ask "Verstanden?" - only present "Frage X:" with A/B/C options!
 User MUST answer each question correctly to proceed to next question!
 
 CRITICAL: After ALL quiz questions are answered and summary given, you MUST ask EXACTLY:
@@ -916,14 +917,14 @@ TOPICS TO COVER (one at a time):
 After ALL topics covered, give a quiz with 3 questions.
 
 QUIZ FORMAT (CRITICAL):
-1. Ask question 1 (multiple choice: A/B/C) → WAIT for answer
-2. VALIDATE: If wrong/unclear, say "❌ Nicht richtig. Versuch nochmal!" and repeat Q1
-3. Only if correct: Give feedback (✅ + explanation) and ask question 2
-4. VALIDATE Q2, only proceed if correct
-5. Ask question 3, VALIDATE, only proceed if correct
+1. Present "Frage 1: [question] A) ... B) ... C) ..." → WAIT (NO "Verstanden?")
+2. VALIDATE: If wrong, say "❌ Nicht richtig. Versuch nochmal!" and repeat Q1
+3. Only if correct: "✅ Richtig!" + explanation, then present "Frage 2: ..."
+4. Present "Frage 2: [question] A) ... B) ... C) ..." → WAIT → VALIDATE
+5. Present "Frage 3: [question] A) ... B) ... C) ..." → WAIT → VALIDATE
 6. ONLY AFTER all 3 CORRECTLY answered: congratulations + summary
 
-User MUST answer correctly to proceed! Don't skip validation.
+NEVER ask "Verstanden?" during quiz! Only "Frage X:" with A/B/C options!
 
 CRITICAL: After ALL quiz questions answered, ask EXACTLY:
 DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
@@ -952,10 +953,10 @@ TOPICS (one at a time):
 After topics: Quiz (3 questions).
 
 QUIZ FORMAT:
-Q1 (A/B/C options) → Wait → VALIDATE (if wrong: repeat Q1, if right: feedback + Q2)
-Q2 → Wait → VALIDATE (if wrong: repeat Q2, if right: feedback + Q3)
-Q3 → Wait → VALIDATE (if wrong: repeat Q3, if right: feedback + Summary)
-User MUST answer correctly to proceed!
+Present "Frage 1: [question] A) ... B) ... C) ..." → WAIT (NO "Verstanden?") → VALIDATE
+If correct: "✅ Richtig!" + explanation, then "Frage 2: ..."
+If wrong: "❌ Nicht richtig. Versuch nochmal!" and repeat same question
+Repeat for Q2 and Q3. NEVER ask "Verstanden?" during quiz!
 
 CRITICAL: After ALL 3 quiz questions CORRECTLY answered, ask EXACTLY:
 DE: "Möchtest du etwas wiederholen oder das Modul abschließen?"
@@ -975,57 +976,57 @@ TOPICS (one at a time):
 5. Finding first clients
 
 After topics: Quiz (3 questions).
-QUIZ FORMAT: Q1 (A/B/C) → Wait → VALIDATE (wrong=repeat Q1, right=feedback+Q2) → Q2 → VALIDATE → Q3 → VALIDATE → Summary
-User must answer correctly to proceed!
+QUIZ: "Frage 1: [question] A) B) C)" → WAIT (NO "Verstanden?") → VALIDATE (wrong=repeat, right="✅ Richtig!"+Frage 2)
+Repeat for Q2 and Q3. NEVER ask "Verstanden?" in quiz!
 Then ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
     imagegen: `Interactive teaching: AI Image Generation
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What is AI Image Gen 2) Tools (Midjourney, DALL-E, Stable Diffusion, Leonardo) 3) Prompting tips 4) Income potential 5) Getting clients
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     videogen: `Interactive teaching: AI Video Generation
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What is AI Video 2) Tools (Runway, Pika, HeyGen) 3) Faceless YouTube strategy 4) Shorts creation 5) Income (€1000-5000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     chatbots: `Interactive teaching: AI Chatbots
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What are chatbots 2) Business use cases 3) Customer service automation 4) Lead generation 5) Tools & income (€2000-10000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     automation: `Interactive teaching: AI Automation
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What is AI Automation 2) Tools (Make.com, Zapier, n8n) 3) Workflows examples 4) Business applications 5) Income (€1500-5000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     copywriting: `Interactive teaching: AI Copywriting
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) AI Copywriting basics 2) Frameworks (AIDA, PAS, BAB) 3) Best tools 4) Getting first clients 5) Income (€1000-5000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     websites: `Interactive teaching: AI Website Building
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) AI website tools overview 2) Framer AI 3) v0.dev & Cursor 4) No-code options 5) Income (€1000-4000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     research: `Interactive teaching: AI Research Services
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) AI Research capabilities 2) Market research 3) Competitor analysis 4) Data processing 5) Income (€1000-4000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     consulting: `Interactive teaching: AI Consulting
 FORMAT: 1 topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What is AI Consulting 2) Strategy & implementation 3) Training services 4) Pricing (€100-300/h, €1000-10000/project) 5) Income (€3000-20000/mo)
-After: Quiz (3 Q). QUIZ: Q1 (A/B/C) → VALIDATE (wrong=repeat, right=next) → Q2 → VALIDATE → Q3 → VALIDATE → Summary. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     choose_path: `You are helping the user choose their AI income path. They've learned all 9 methods. Help them pick 1-3 that fit their profile.
@@ -1196,6 +1197,11 @@ function addBot(msg, skipButtons = false) {
     if (!skipButtons && msg.includes('?')) {
         const msgLower = msg.toLowerCase();
 
+        // Check if this is a quiz question (has A/B/C options)
+        const isQuizQuestion = (msgLower.includes('a)') && msgLower.includes('b)') && msgLower.includes('c)')) ||
+                               (msgLower.includes('frage 1') || msgLower.includes('frage 2') || msgLower.includes('frage 3') ||
+                                msgLower.includes('question 1') || msgLower.includes('question 2') || msgLower.includes('question 3'));
+
         // Module completion buttons - ONLY show when AI asks the EXACT completion question
         // Must have BOTH keywords AND be phrased as a question about user's choice
         const hasRepeatKeyword = msgLower.includes('wiederholen') || msgLower.includes('repeat') || msgLower.includes('повторить');
@@ -1209,10 +1215,10 @@ function addBot(msg, skipButtons = false) {
                 <button class="quick-btn" onclick="handleModuleComplete()" style="background: #10b981; border-color: #10b981;">✅ Modul abschließen</button>
             </div>`;
         }
-        // "Verstanden" button for interactive lessons - check for various phrasings
-        else if (msgLower.includes('verstanden') || msgLower.includes('understood') || msgLower.includes('понял') ||
+        // "Verstanden" button for interactive lessons - BUT NOT for quiz questions
+        else if (!isQuizQuestion && (msgLower.includes('verstanden') || msgLower.includes('understood') || msgLower.includes('понял') ||
                  msgLower.includes('verstehst du') || msgLower.includes('hast du verstanden') ||
-                 msgLower.includes('do you understand') || msgLower.includes('понимаешь')) {
+                 msgLower.includes('do you understand') || msgLower.includes('понимаешь'))) {
             html += `<div class="quick-replies">
                 <button class="quick-btn" onclick="quickReply('Verstanden ✓', 'understood')" style="background: #10b981; border-color: #10b981;">✅ Verstanden</button>
             </div>`;
