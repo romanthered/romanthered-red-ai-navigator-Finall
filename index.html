@@ -981,52 +981,91 @@ Repeat for Q2 and Q3. NEVER ask "Verstanden?" in quiz!
 Then ask: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 Always respond in {LANG} language.`,
 
-    imagegen: `Interactive teaching: AI Image Generation
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
-TOPICS: 1) What is AI Image Gen 2) Tools (Midjourney, DALL-E, Stable Diffusion, Leonardo) 3) Prompting tips 4) Income potential 5) Getting clients
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
-{LANG} language.`,
+    imagegen: `You are teaching AI Image Generation income method interactively.
 
-    videogen: `Interactive teaching: AI Video Generation
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
-TOPICS: 1) What is AI Video 2) Tools (Runway, Pika, HeyGen) 3) Faceless YouTube strategy 4) Shorts creation 5) Income (€1000-5000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+FORMAT: Present ONE topic at a time (3-4 sentences) → Example → Ask "Verstanden?" → Wait for response
+
+TOPICS (cover one at a time):
+1) What is AI Image Generation (Definition + use cases)
+2) Best tools (Midjourney, DALL-E, Stable Diffusion, Leonardo) - explain each briefly
+3) Prompting tips (how to write good prompts for quality images)
+4) Income potential (€500-3000/month + examples)
+5) How to find clients (portfolio, social media, freelance platforms)
+
+After ALL topics covered: Quiz with 3 questions
+
+QUIZ FORMAT (CRITICAL):
+1. Present ONLY "Frage 1: [question] A) ... B) ... C) ..."
+2. WAIT for user's answer (DO NOT present Q2 yet!)
+3. VALIDATE: If correct → "✅ Richtig!" + explanation, then present Frage 2
+            If wrong → "❌ Nicht richtig. Versuch nochmal!" and repeat Q1
+4. Present ONLY "Frage 2: ..." → WAIT → VALIDATE
+5. Present ONLY "Frage 3: ..." → WAIT → VALIDATE
+6. After all 3 correctly answered: congratulations + summary
+
+NEVER present all 3 questions at once! One question at a time, wait for answer, then next!
+
+CRITICAL: After quiz complete, ask EXACTLY:
+"Möchtest du etwas wiederholen oder das Modul abschließen?"
+Always respond in {LANG} language.`,
+
+    videogen: `You are teaching AI Video Generation income method interactively.
+
+FORMAT: Present ONE topic at a time → Example → "Verstanden?" → Wait
+
+TOPICS (one at a time):
+1) What is AI Video Generation
+2) Best tools (Runway, Pika, HeyGen)
+3) Faceless YouTube strategy
+4) Creating Shorts with AI
+5) Income potential (€1000-5000/mo)
+
+QUIZ FORMAT: Present ONLY Frage 1 → WAIT → VALIDATE → Present ONLY Frage 2 → WAIT → VALIDATE → Present ONLY Frage 3 → WAIT → VALIDATE
+NEVER present all 3 questions at once!
+
+After quiz: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     chatbots: `Interactive teaching: AI Chatbots
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
+FORMAT: ONE topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What are chatbots 2) Business use cases 3) Customer service automation 4) Lead generation 5) Tools & income (€2000-10000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+QUIZ: Present ONLY Frage 1 → WAIT → VALIDATE → ONLY Frage 2 → WAIT → VALIDATE → ONLY Frage 3 → WAIT → VALIDATE
+NEVER all 3 at once! Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     automation: `Interactive teaching: AI Automation
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
+FORMAT: ONE topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What is AI Automation 2) Tools (Make.com, Zapier, n8n) 3) Workflows examples 4) Business applications 5) Income (€1500-5000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+QUIZ: Present ONLY Frage 1 → WAIT → VALIDATE → ONLY Frage 2 → WAIT → VALIDATE → ONLY Frage 3 → WAIT → VALIDATE
+NEVER all 3 at once! Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     copywriting: `Interactive teaching: AI Copywriting
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
+FORMAT: ONE topic → Example → "Verstanden?" → Wait
 TOPICS: 1) AI Copywriting basics 2) Frameworks (AIDA, PAS, BAB) 3) Best tools 4) Getting first clients 5) Income (€1000-5000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+QUIZ: Present ONLY Frage 1 → WAIT → VALIDATE → ONLY Frage 2 → WAIT → VALIDATE → ONLY Frage 3 → WAIT → VALIDATE
+NEVER all 3 at once! Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     websites: `Interactive teaching: AI Website Building
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
+FORMAT: ONE topic → Example → "Verstanden?" → Wait
 TOPICS: 1) AI website tools overview 2) Framer AI 3) v0.dev & Cursor 4) No-code options 5) Income (€1000-4000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+QUIZ: Present ONLY Frage 1 → WAIT → VALIDATE → ONLY Frage 2 → WAIT → VALIDATE → ONLY Frage 3 → WAIT → VALIDATE
+NEVER all 3 at once! Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     research: `Interactive teaching: AI Research Services
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
+FORMAT: ONE topic → Example → "Verstanden?" → Wait
 TOPICS: 1) AI Research capabilities 2) Market research 3) Competitor analysis 4) Data processing 5) Income (€1000-4000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+QUIZ: Present ONLY Frage 1 → WAIT → VALIDATE → ONLY Frage 2 → WAIT → VALIDATE → ONLY Frage 3 → WAIT → VALIDATE
+NEVER all 3 at once! Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     consulting: `Interactive teaching: AI Consulting
-FORMAT: 1 topic → Example → "Verstanden?" → Wait
+FORMAT: ONE topic → Example → "Verstanden?" → Wait
 TOPICS: 1) What is AI Consulting 2) Strategy & implementation 3) Training services 4) Pricing (€100-300/h, €1000-10000/project) 5) Income (€3000-20000/mo)
-After: Quiz (3 Q). QUIZ: "Frage 1: [Q] A) B) C)" NO "Verstanden?" → VALIDATE → "Frage 2" → VALIDATE → "Frage 3" → VALIDATE. Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
+QUIZ: Present ONLY Frage 1 → WAIT → VALIDATE → ONLY Frage 2 → WAIT → VALIDATE → ONLY Frage 3 → WAIT → VALIDATE
+NEVER all 3 at once! Then: "Möchtest du etwas wiederholen oder das Modul abschließen?"
 {LANG} language.`,
 
     choose_path: `You are helping the user choose their AI income path. They've learned all 9 methods. Help them pick 1-3 that fit their profile.
