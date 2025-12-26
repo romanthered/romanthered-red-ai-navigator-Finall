@@ -325,6 +325,7 @@
                 <span id="currentModule">Intro</span>
             </div>
             <div class="header-right">
+                <button class="icon-btn" onclick="restartCurrentModule()" id="restartBtn" title="Modul neu starten">🔄</button>
                 <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
             </div>
         </header>
@@ -1518,6 +1519,33 @@ function getNextModuleId(currentId) {
         return moduleIds[currentIndex + 1];
     }
     return null;
+}
+
+function restartCurrentModule() {
+    if (!S.currentModule) return;
+
+    // Confirm with user (i18n)
+    const moduleName = MODULES[S.currentModule]?.name[S.lang] || S.currentModule;
+    const confirmMessages = {
+        de: `Möchtest du das Modul "${moduleName}" wirklich neu starten? Die bisherige Konversation wird gelöscht.`,
+        en: `Do you really want to restart the module "${moduleName}"? The previous conversation will be deleted.`,
+        ru: `Вы действительно хотите перезапустить модуль "${moduleName}"? Предыдущий разговор будет удалён.`
+    };
+    if (!confirm(confirmMessages[S.lang] || confirmMessages.en)) {
+        return;
+    }
+
+    // Delete current module conversation
+    delete S.moduleConversations[S.currentModule];
+
+    // Clear chat display
+    document.getElementById('chat').innerHTML = '';
+
+    // Reinitialize the module with fresh system prompt
+    initModule(S.currentModule);
+
+    // Save state
+    saveUserData();
 }
 
 function continueToNextModule() {
