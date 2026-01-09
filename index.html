@@ -1181,27 +1181,24 @@ function addBot(msg) {
 
     let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
 
-    // Add "Verstanden" button if message contains question about understanding
-    if (msg.includes('?')) {
-        const msgLower = msg.toLowerCase();
+    const msgLower = msg.toLowerCase();
 
-        // Module completion buttons
-        const hasRepeatKeyword = msgLower.includes('wiederholen') || msgLower.includes('repeat');
-        const hasFinishKeyword = msgLower.includes('abschließen') || msgLower.includes('complete');
-        const isCompletionQuestion = (msgLower.includes('möchtest du') || msgLower.includes('would you like'));
+    // Module completion buttons
+    const hasRepeatKeyword = msgLower.includes('wiederholen') || msgLower.includes('repeat');
+    const hasFinishKeyword = msgLower.includes('abschließen') || msgLower.includes('complete');
+    const isCompletionQuestion = (msgLower.includes('möchtest du') || msgLower.includes('would you like'));
 
-        if (hasRepeatKeyword && hasFinishKeyword && isCompletionQuestion) {
-            html += `<div class="quick-replies">
-                <button class="quick-btn" onclick="quickReply('Modul abschließen')" style="background:#10b981;border-color:#10b981;color:#fff">✅ Modul abschließen</button>
-                <button class="quick-btn" onclick="quickReply('Modul wiederholen')" style="background:#f59e0b;border-color:#f59e0b;color:#fff">🔄 Modul wiederholen</button>
-            </div>`;
-        }
-        // "Verstanden" button for step-by-step learning
-        else if (msgLower.includes('verstanden') || msgLower.includes('understood')) {
-            html += `<div class="quick-replies">
-                <button class="quick-btn" onclick="quickReply('Verstanden ✓')" style="background:#10b981;border-color:#10b981;color:#fff">✅ Verstanden</button>
-            </div>`;
-        }
+    if (hasRepeatKeyword && hasFinishKeyword && isCompletionQuestion) {
+        html += `<div class="quick-replies">
+            <button class="quick-btn" onclick="quickReply('Modul abschließen')" style="background:#10b981;border-color:#10b981;color:#fff">✅ Modul abschließen</button>
+            <button class="quick-btn" onclick="quickReply('Modul wiederholen')" style="background:#f59e0b;border-color:#f59e0b;color:#fff">🔄 Modul wiederholen</button>
+        </div>`;
+    }
+    // "Verstanden" button for step-by-step learning - CHECK FOR "verstanden" keyword anywhere in message
+    else if (msgLower.includes('verstanden') || msgLower.includes('understood')) {
+        html += `<div class="quick-replies">
+            <button class="quick-btn" onclick="quickReply('Verstanden ✓')" style="background:#10b981;border-color:#10b981;color:#fff">✅ Verstanden</button>
+        </div>`;
     }
 
     div.innerHTML = html;
