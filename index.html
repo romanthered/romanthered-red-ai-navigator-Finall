@@ -1519,26 +1519,17 @@ function resetEntireCourse() {
     S.completedModules = [];
     S.conversation = [];
     S.profile = {};
+    S.apiKey = null;
 
-    // Clear localStorage
+    // Clear localStorage completely
     localStorage.removeItem('red_ai_completed');
     localStorage.removeItem('red_ai_profile');
+    localStorage.removeItem('red_ai_api_key');
+    localStorage.removeItem('red_ai_bullrun_count');
+    localStorage.removeItem('red_ai_bullrun_closed');
 
-    // Close modal
-    closeSettingsModal();
-
-    // Refresh module list
-    renderModuleList();
-
-    // Go back to intro
-    selectModule('intro');
-
-    // Show success message
-    const statusEl = document.getElementById('settingsStatus');
-    statusEl.textContent = '✓ Kurs wurde neu gestartet!';
-    statusEl.style.background = 'rgba(34,197,94,0.2)';
-    statusEl.style.color = '#22c55e';
-    statusEl.classList.add('show');
+    // Reload page to start fresh (will show language + API key screen)
+    location.reload();
 }
 </script>
 </body>
