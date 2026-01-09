@@ -204,6 +204,42 @@
         .admin-status{margin-top:12px;padding:12px;border-radius:8px;background:var(--accent-s);color:var(--accent);font-size:13px;display:none}
         .admin-status.show{display:block}
 
+        /* Module Completion Popup */
+        .completion-overlay{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px)}
+        .completion-overlay.show{display:flex;animation:fadeIn 0.5s ease}
+
+        .completion-box{max-width:600px;background:var(--surface-solid);border:2px solid var(--accent);border-radius:24px;padding:48px;text-align:center;position:relative;animation:popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)}
+        @keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+
+        .completion-icon{width:100px;height:100px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:48px;animation:bounce 1s ease infinite;box-shadow:0 0 100px var(--accent-g)}
+        @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
+
+        .completion-title{font-family:'Syne';font-size:32px;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+        .completion-subtitle{font-family:'Syne';font-size:18px;font-weight:600;color:var(--text);margin-bottom:16px}
+        .completion-message{color:var(--text-s);font-size:15px;line-height:1.7;margin-bottom:32px}
+
+        .progress-complete{background:var(--surface);border-radius:12px;padding:20px;margin-bottom:32px}
+        .progress-complete-label{font-size:13px;color:var(--text-s);margin-bottom:12px}
+        .progress-complete-bar{height:12px;background:var(--border);border-radius:6px;overflow:hidden;position:relative}
+        .progress-complete-fill{height:100%;background:var(--grad);border-radius:6px;transition:width 2s cubic-bezier(0.68, -0.55, 0.265, 1.55);box-shadow:0 0 20px var(--accent-g)}
+
+        .completion-actions{display:flex;gap:12px}
+        .completion-btn{flex:1;padding:16px;border-radius:12px;font-family:'Syne';font-weight:600;font-size:15px;cursor:pointer;transition:all 0.3s;border:none}
+        .completion-btn.primary{background:var(--grad);color:#fff}
+        .completion-btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 24px -8px var(--accent-g)}
+        .completion-btn.secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+        .completion-btn.secondary:hover{background:var(--elevated);border-color:var(--accent)}
+
+        /* Confetti Canvas */
+        #confetti{position:fixed;inset:0;z-index:1999;pointer-events:none;display:none}
+        #confetti.show{display:block}
+
+        /* Correction Options */
+        .correction-options{display:none;flex-direction:column;gap:12px;margin-top:24px}
+        .correction-options.show{display:flex}
+        .correction-btn{background:var(--elevated);border:1px solid var(--border);padding:14px;border-radius:12px;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:'Inter'}
+        .correction-btn:hover{background:var(--accent-s);border-color:var(--accent);transform:translateX(4px)}
+
         /* Marketing Widget */
         .marketing-widget{position:fixed;top:80px;right:24px;width:320px;background:var(--surface-solid);border:1px solid var(--border);border-radius:16px;padding:20px;z-index:50;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
         .marketing-widget-title{font-family:'Syne';font-size:14px;font-weight:700;margin-bottom:12px;text-align:center}
@@ -233,6 +269,37 @@
 </head>
 <body>
     <canvas id="stars"></canvas>
+    <canvas id="confetti"></canvas>
+
+    <!-- Module Completion Popup -->
+    <div class="completion-overlay" id="completionOv">
+        <div class="completion-box">
+            <div class="completion-icon">🎉</div>
+            <div class="completion-title" id="completionTitle">Glückwunsch!</div>
+            <div class="completion-subtitle" id="completionSubtitle">Modul Abgeschlossen</div>
+            <div class="completion-message" id="completionMessage">Deine Informationen wurden gespeichert und ich habe deinen personalisierten Lernpfad vorbereitet!</div>
+
+            <div class="progress-complete">
+                <div class="progress-complete-label" id="progressCompleteLabel">Fortschritt: 7%</div>
+                <div class="progress-complete-bar">
+                    <div class="progress-complete-fill" id="progressCompleteFill" style="width:0%"></div>
+                </div>
+            </div>
+
+            <div class="completion-actions" id="completionActions">
+                <button class="completion-btn primary" onclick="continueToNextModule()" id="continueBtn">Weiter zum nächsten Modul →</button>
+                <button class="completion-btn secondary" onclick="showCorrectionOptions()" id="repeatBtn">🔄 Modul wiederholen</button>
+            </div>
+
+            <div class="correction-options" id="correctionOptions">
+                <div style="font-size:14px;color:var(--text-s);margin-bottom:8px;" id="correctionTitle">Welchen Bereich möchtest du korrigieren?</div>
+                <button class="correction-btn" onclick="correctField('name')">👤 <span id="corrField1">Dein Name</span></button>
+                <button class="correction-btn" onclick="correctField('goal')">🎯 <span id="corrField2">Dein Ziel</span></button>
+                <button class="correction-btn" onclick="correctField('time')">⏰ <span id="corrField3">Verfügbare Zeit</span></button>
+                <button class="correction-btn" onclick="correctField('experience')">📚 <span id="corrField4">Erfahrungslevel</span></button>
+            </div>
+        </div>
+    </div>
 
     <!-- Language Selection -->
     <div class="overlay" id="langOv">
@@ -1266,6 +1333,125 @@ startApp = function() {
     updateBullrun();
     startBullrunInterval();
 };
+
+// ═══════════════════════════════════════════════════════════════
+// COMPLETION POPUP & CONFETTI
+// ═══════════════════════════════════════════════════════════════
+function completeModule(moduleId) {
+    if (!S.completedModules.includes(moduleId)) {
+        S.completedModules.push(moduleId);
+        localStorage.setItem('red_ai_completed', JSON.stringify(S.completedModules));
+    }
+    renderModuleList();
+    showCompletionPopup(moduleId);
+}
+
+function showCompletionPopup(moduleId) {
+    const total = Object.keys(MODULES).length;
+    const completed = S.completedModules.length;
+    const percentage = Math.round((completed / total) * 100);
+
+    document.getElementById('progressCompleteLabel').textContent = `Fortschritt: ${percentage}%`;
+    document.getElementById('completionOv').classList.add('show');
+
+    setTimeout(() => {
+        document.getElementById('progressCompleteFill').style.width = percentage + '%';
+    }, 800);
+
+    launchConfetti();
+
+    S.nextModuleId = getNextModuleId(moduleId);
+}
+
+function getNextModuleId(currentId) {
+    const moduleIds = Object.keys(MODULES);
+    const currentIndex = moduleIds.indexOf(currentId);
+    if (currentIndex < moduleIds.length - 1) {
+        return moduleIds[currentIndex + 1];
+    }
+    return null;
+}
+
+function continueToNextModule() {
+    document.getElementById('completionOv').classList.remove('show');
+    document.getElementById('correctionOptions').classList.remove('show');
+    document.getElementById('completionActions').style.display = 'flex';
+
+    if (S.nextModuleId) {
+        setTimeout(() => {
+            selectModule(S.nextModuleId);
+        }, 500);
+    }
+}
+
+function showCorrectionOptions() {
+    document.getElementById('completionActions').style.display = 'none';
+    document.getElementById('correctionOptions').classList.add('show');
+}
+
+function correctField(field) {
+    document.getElementById('completionOv').classList.remove('show');
+    document.getElementById('correctionOptions').classList.remove('show');
+    document.getElementById('completionActions').style.display = 'flex';
+
+    // Restart intro module
+    S.conversation = [];
+    document.getElementById('chat').innerHTML = '';
+    initModule('intro');
+}
+
+// Confetti animation
+const confettiCanvas = document.getElementById('confetti');
+const confettiCtx = confettiCanvas.getContext('2d');
+let confettiParticles = [];
+
+function launchConfetti() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+    confettiCanvas.classList.add('show');
+
+    confettiParticles = [];
+    for (let i = 0; i < 150; i++) {
+        confettiParticles.push({
+            x: Math.random() * confettiCanvas.width,
+            y: -10,
+            vx: (Math.random() - 0.5) * 4,
+            vy: Math.random() * 3 + 2,
+            color: ['#dc2626', '#ef4444', '#f97316', '#22c55e', '#3b82f6'][Math.floor(Math.random() * 5)],
+            size: Math.random() * 8 + 4
+        });
+    }
+
+    animateConfetti();
+
+    setTimeout(() => {
+        confettiCanvas.classList.remove('show');
+        confettiParticles = [];
+    }, 4000);
+}
+
+function animateConfetti() {
+    if (confettiParticles.length === 0) return;
+
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    confettiParticles.forEach((p, i) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.1;
+
+        if (p.y > confettiCanvas.height) {
+            confettiParticles.splice(i, 1);
+        }
+
+        confettiCtx.fillStyle = p.color;
+        confettiCtx.fillRect(p.x, p.y, p.size, p.size);
+    });
+
+    if (confettiParticles.length > 0) {
+        requestAnimationFrame(animateConfetti);
+    }
+}
 </script>
 </body>
 </html>
