@@ -918,17 +918,20 @@ async function callAnthropic(messages, system) {
         },
         body: JSON.stringify({
             model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 2048,
+            max_tokens: 8192,
             system: system,
             messages: messages
         })
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        console.error('API Error:', data);
+        throw new Error(data.error?.message || `API Error: ${response.status}`);
     }
 
-    return await response.json();
+    return data;
 }
 
 async function initModule(moduleId) {
@@ -952,7 +955,13 @@ async function initModule(moduleId) {
     } catch (e) {
         removeTyping();
         console.error('AI Error:', e);
-        const errorMsg = '⚠️ Connection error. Please check your API key. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>';
+        let errorMsg = '⚠️ API Error: ' + e.message + '<br><br>';
+        if (e.message.includes('model:')) {
+            errorMsg += 'The AI model is not available. This might be a temporary issue with the API.<br>';
+        } else if (e.message.includes('401') || e.message.includes('authentication')) {
+            errorMsg += 'Your API key appears to be invalid or expired.<br>';
+        }
+        errorMsg += '<button onclick="resetApiKey()" style="margin-top:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>';
         addBot(errorMsg);
     }
 }
