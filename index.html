@@ -1179,7 +1179,11 @@ function addBot(msg) {
     const div = document.createElement('div');
     div.className = 'msg bot';
 
-    let html = `<div class="msg-bub">${msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>`;
+    // Create message bubble
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bub';
+    bubble.innerHTML = msg.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    div.appendChild(bubble);
 
     const msgLower = msg.toLowerCase();
 
@@ -1189,19 +1193,46 @@ function addBot(msg) {
     const isCompletionQuestion = (msgLower.includes('möchtest du') || msgLower.includes('would you like'));
 
     if (hasRepeatKeyword && hasFinishKeyword && isCompletionQuestion) {
-        html += `<div class="quick-replies">
-            <button class="quick-btn" onclick="quickReply('Modul abschließen')" style="background:#10b981;border-color:#10b981;color:#fff">✅ Modul abschließen</button>
-            <button class="quick-btn" onclick="quickReply('Modul wiederholen')" style="background:#f59e0b;border-color:#f59e0b;color:#fff">🔄 Modul wiederholen</button>
-        </div>`;
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'quick-replies';
+
+        const finishBtn = document.createElement('button');
+        finishBtn.className = 'quick-btn';
+        finishBtn.style.background = '#10b981';
+        finishBtn.style.borderColor = '#10b981';
+        finishBtn.style.color = '#fff';
+        finishBtn.textContent = '✅ Modul abschließen';
+        finishBtn.onclick = () => quickReply('Modul abschließen');
+
+        const repeatBtn = document.createElement('button');
+        repeatBtn.className = 'quick-btn';
+        repeatBtn.style.background = '#f59e0b';
+        repeatBtn.style.borderColor = '#f59e0b';
+        repeatBtn.style.color = '#fff';
+        repeatBtn.textContent = '🔄 Modul wiederholen';
+        repeatBtn.onclick = () => quickReply('Modul wiederholen');
+
+        buttonsDiv.appendChild(finishBtn);
+        buttonsDiv.appendChild(repeatBtn);
+        div.appendChild(buttonsDiv);
     }
-    // "Verstanden" button for step-by-step learning - CHECK FOR "verstanden" keyword anywhere in message
+    // "Verstanden" button for step-by-step learning
     else if (msgLower.includes('verstanden') || msgLower.includes('understood')) {
-        html += `<div class="quick-replies">
-            <button class="quick-btn" onclick="quickReply('Verstanden ✓')" style="background:#10b981;border-color:#10b981;color:#fff">✅ Verstanden</button>
-        </div>`;
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.className = 'quick-replies';
+
+        const verstandenBtn = document.createElement('button');
+        verstandenBtn.className = 'quick-btn';
+        verstandenBtn.style.background = '#10b981';
+        verstandenBtn.style.borderColor = '#10b981';
+        verstandenBtn.style.color = '#fff';
+        verstandenBtn.textContent = '✅ Verstanden';
+        verstandenBtn.onclick = () => quickReply('Verstanden ✓');
+
+        buttonsDiv.appendChild(verstandenBtn);
+        div.appendChild(buttonsDiv);
     }
 
-    div.innerHTML = html;
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
 }
