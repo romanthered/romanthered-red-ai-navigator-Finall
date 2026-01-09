@@ -347,7 +347,7 @@
             </div>
             <div class="header-right">
                 <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
-                <button class="icon-btn" onclick="openAdminModal()" title="Admin Mode (Ctrl+Cmd+L)">🔑</button>
+                <button class="icon-btn" onclick="showApiKeySettings()" title="API Settings">⚙️</button>
             </div>
         </header>
 
@@ -398,7 +398,24 @@
         </div>
     </div>
 
-    <!-- Admin Modal -->
+    <!-- Settings Modal -->
+    <div class="admin-modal" id="settingsModal">
+        <div class="admin-box">
+            <div class="admin-title">Einstellungen</div>
+
+            <div style="text-align:left;margin-bottom:20px">
+                <label style="font-size:13px;color:var(--text-s);display:block;margin-bottom:8px">API Key</label>
+                <input type="password" id="settingsApiKey" class="admin-input" placeholder="sk-ant-api03-...">
+            </div>
+
+            <button class="admin-btn" onclick="saveApiKeySettings()">API Key speichern</button>
+            <button class="admin-btn admin-btn-cancel" onclick="resetEntireCourse()" style="background:#ef4444;color:#fff;border:none">🔄 Ganzen Kurs neu starten</button>
+            <button class="admin-btn admin-btn-cancel" onclick="closeSettingsModal()">Schließen</button>
+            <div class="admin-status" id="settingsStatus"></div>
+        </div>
+    </div>
+
+    <!-- Admin Modal (hidden, only via shortcut) -->
     <div class="admin-modal" id="adminModal">
         <div class="admin-box">
             <div class="admin-title">Admin Access</div>
@@ -1451,6 +1468,77 @@ function animateConfetti() {
     if (confettiParticles.length > 0) {
         requestAnimationFrame(animateConfetti);
     }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// SETTINGS MODAL
+// ═══════════════════════════════════════════════════════════════
+function showApiKeySettings() {
+    document.getElementById('settingsApiKey').value = S.apiKey || '';
+    document.getElementById('settingsModal').classList.add('show');
+    document.getElementById('settingsStatus').classList.remove('show');
+}
+
+function closeSettingsModal() {
+    document.getElementById('settingsModal').classList.remove('show');
+}
+
+function saveApiKeySettings() {
+    const newKey = document.getElementById('settingsApiKey').value.trim();
+    const statusEl = document.getElementById('settingsStatus');
+
+    if (!newKey || !newKey.startsWith('sk-ant-')) {
+        statusEl.textContent = '❌ Ungültiger API Key';
+        statusEl.style.background = 'var(--accent-s)';
+        statusEl.style.color = 'var(--accent)';
+        statusEl.classList.add('show');
+        return;
+    }
+
+    S.apiKey = newKey;
+    localStorage.setItem('red_ai_api_key', newKey);
+
+    statusEl.textContent = '✓ API Key gespeichert!';
+    statusEl.style.background = 'rgba(34,197,94,0.2)';
+    statusEl.style.color = '#22c55e';
+    statusEl.classList.add('show');
+
+    setTimeout(() => {
+        closeSettingsModal();
+    }, 1500);
+}
+
+function resetEntireCourse() {
+    const confirmMsg = 'Möchtest du wirklich den GESAMTEN Kurs neu starten? Alle Fortschritte werden gelöscht!';
+
+    if (!confirm(confirmMsg)) {
+        return;
+    }
+
+    // Clear all progress
+    S.completedModules = [];
+    S.conversation = [];
+    S.profile = {};
+
+    // Clear localStorage
+    localStorage.removeItem('red_ai_completed');
+    localStorage.removeItem('red_ai_profile');
+
+    // Close modal
+    closeSettingsModal();
+
+    // Refresh module list
+    renderModuleList();
+
+    // Go back to intro
+    selectModule('intro');
+
+    // Show success message
+    const statusEl = document.getElementById('settingsStatus');
+    statusEl.textContent = '✓ Kurs wurde neu gestartet!';
+    statusEl.style.background = 'rgba(34,197,94,0.2)';
+    statusEl.style.color = '#22c55e';
+    statusEl.classList.add('show');
 }
 </script>
 </body>
