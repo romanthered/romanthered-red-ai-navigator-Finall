@@ -175,6 +175,22 @@
 
         #fi{display:none}
 
+        /* AI Bullrun Widget */
+        .bullrun-widget{position:fixed;top:80px;right:24px;width:300px;background:var(--surface-solid);border:1px solid var(--border);border-radius:16px;padding:20px;z-index:50;box-shadow:0 8px 32px rgba(0,0,0,0.3);display:none}
+        .bullrun-title{font-family:'Syne';font-size:16px;font-weight:700;margin-bottom:8px;text-align:center;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .bullrun-subtitle{font-size:12px;color:var(--text-s);margin-bottom:16px;text-align:center}
+        .bullrun-bar-container{position:relative;height:40px;background:var(--surface);border-radius:20px;overflow:hidden;margin-bottom:12px}
+        .bullrun-bar{position:absolute;left:0;top:0;height:100%;background:var(--grad);border-radius:20px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 20px var(--accent-g);animation:pulse-glow 2s ease-in-out infinite}
+        @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px var(--accent-g)}50%{box-shadow:0 0 35px var(--accent),0 0 15px var(--accent-g)}}
+        .bullrun-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:600;z-index:1;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+        .bullrun-stats{display:flex;justify-content:space-between;font-size:11px;color:var(--text-m)}
+        .bullrun-close{position:absolute;top:12px;right:12px;width:24px;height:24px;border:none;background:transparent;color:var(--text-m);cursor:pointer;font-size:18px;line-height:1}
+        .bullrun-close:hover{color:var(--text)}
+
+        @media(max-width:900px){
+            .bullrun-widget{top:70px;right:16px;width:280px;padding:16px}
+        }
+
         /* Admin Modal */
         .admin-modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px)}
         .admin-modal.show{display:flex}
@@ -193,23 +209,21 @@
         .marketing-widget-title{font-family:'Syne';font-size:14px;font-weight:700;margin-bottom:12px;text-align:center}
         .marketing-widget-subtitle{font-size:12px;color:var(--text-s);margin-bottom:16px;text-align:center}
         .progress-container{position:relative;height:40px;background:var(--surface);border-radius:20px;overflow:hidden;margin-bottom:12px}
-        .progress-glow{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,transparent,var(--accent-g),transparent);border-radius:20px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 20px var(--accent-g);animation:pulse-glow 2s ease-in-out infinite}
-        @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px var(--accent-g)}50%{box-shadow:0 0 35px var(--accent),0 0 15px var(--accent-g)}}
+        .progress-glow{position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,transparent,var(--accent-g),transparent);border-radius:20px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);box-shadow:0 0 20px var(--accent-g)}
         .progress-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:13px;font-weight:600;z-index:1}
         .widget-stats{display:flex;justify-content:space-between;font-size:11px;color:var(--text-m)}
         .widget-close{position:absolute;top:12px;right:12px;width:24px;height:24px;border:none;background:transparent;color:var(--text-m);cursor:pointer;font-size:16px}
         .widget-close:hover{color:var(--text)}
 
         /* Notification Popup */
-        .notification{position:fixed;bottom:24px;right:24px;min-width:300px;background:var(--surface-solid);border:1px solid var(--success);border-radius:12px;padding:16px 20px;padding-right:40px;z-index:100;display:none;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
-        .notification.show{display:flex;animation:slideIn 0.4s ease}
+        .notification{position:fixed;bottom:24px;right:24px;min-width:300px;background:var(--surface-solid);border:1px solid var(--success);border-radius:12px;padding:16px 20px;z-index:100;display:flex;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.3);animation:slideIn 0.4s ease,slideOut 0.4s ease 2.6s;opacity:0}
+        .notification.show{opacity:1}
         @keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+        @keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(400px);opacity:0}}
         .notification-icon{width:40px;height:40px;background:rgba(34,197,94,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px}
         .notification-content{flex:1}
         .notification-title{font-weight:600;font-size:14px;margin-bottom:2px}
         .notification-text{font-size:12px;color:var(--text-s)}
-        .notification-close{position:absolute;top:12px;right:12px;width:24px;height:24px;border:none;background:transparent;color:var(--text-m);cursor:pointer;font-size:16px;line-height:1}
-        .notification-close:hover{color:var(--text)}
 
         @media(max-width:900px){
             .marketing-widget{top:70px;right:16px;width:280px;padding:16px}
@@ -266,6 +280,7 @@
             </div>
             <div class="header-right">
                 <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+                <button class="icon-btn" onclick="openAdminModal()" title="Admin Mode (Ctrl+Cmd+L)">🔑</button>
             </div>
         </header>
 
@@ -301,18 +316,18 @@
         </main>
     </div>
 
-    <!-- Marketing Widget (outside app container) -->
-    <div class="marketing-widget" id="marketingWidget" style="display:none">
-        <button class="widget-close" onclick="closeWidget()">×</button>
-        <div class="marketing-widget-title" id="widgetTitle">AI Bullrun</div>
-        <div class="marketing-widget-subtitle" id="widgetSubtitle">People already earning with AI</div>
-        <div class="progress-container">
-            <div class="progress-glow" id="progressGlow" style="width:47.3%"></div>
-            <div class="progress-text" id="progressText">47,300 / 100,000</div>
+    <!-- AI Bullrun Widget -->
+    <div class="bullrun-widget" id="bullrunWidget">
+        <button class="bullrun-close" onclick="closeBullrun()">×</button>
+        <div class="bullrun-title">AI Bullrun</div>
+        <div class="bullrun-subtitle" id="bullrunSubtitle">Menschen verdienen bereits mit AI</div>
+        <div class="bullrun-bar-container">
+            <div class="bullrun-bar" id="bullrunBar" style="width:47.3%"></div>
+            <div class="bullrun-text" id="bullrunText">47,300 / 100,000</div>
         </div>
-        <div class="widget-stats">
-            <span id="widgetStat1">Started: 2024</span>
-            <span id="widgetStat2">Target: 2030</span>
+        <div class="bullrun-stats">
+            <span>Start: 2024</span>
+            <span>Ziel: 2030</span>
         </div>
     </div>
 
@@ -326,9 +341,6 @@
             <div class="admin-status" id="adminStatus"></div>
         </div>
     </div>
-
-    <!-- Notification Container -->
-    <div id="notificationContainer"></div>
 
 <script>
 // ═══════════════════════════════════════════════════════════════
@@ -382,8 +394,8 @@ const S = {
     profile: {},
     project: { images: [], notes: [] },
     adminMode: localStorage.getItem('red_ai_admin_mode') === 'true' || false,
-    marketingCount: parseInt(localStorage.getItem('red_ai_marketing_count')) || 47300,
-    widgetClosed: localStorage.getItem('red_ai_widget_closed') === 'true' || false
+    bullrunCount: parseInt(localStorage.getItem('red_ai_bullrun_count')) || 47300,
+    bullrunClosed: localStorage.getItem('red_ai_bullrun_closed') === 'true' || false
 };
 
 const MODULES = {
@@ -419,7 +431,7 @@ const i18n = {
         apiError: 'Invalid API key. Please check and try again.',
         apiHelp: "Don't have an API key?",
         apiHelpLink: 'Get one from Anthropic →',
-        widgetTitle: 'AI Bullrun',
+        widgetTitle: 'AI Money Wave 2030',
         widgetSubtitle: 'People already earning with AI',
         widgetStat1: 'Started: 2024',
         widgetStat2: 'Target: 2030',
@@ -433,7 +445,7 @@ const i18n = {
         apiError: 'Ungültiger API Key. Bitte prüfen.',
         apiHelp: 'Noch keinen API Key?',
         apiHelpLink: 'Hol dir einen bei Anthropic →',
-        widgetTitle: 'AI Bullrun',
+        widgetTitle: 'AI Geld Welle 2030',
         widgetSubtitle: 'Menschen verdienen bereits mit AI',
         widgetStat1: 'Start: 2024',
         widgetStat2: 'Ziel: 2030',
@@ -447,7 +459,7 @@ const i18n = {
         apiError: 'Неверный API ключ. Проверь.',
         apiHelp: 'Нет API ключа?',
         apiHelpLink: 'Получи у Anthropic →',
-        widgetTitle: 'AI Bullrun',
+        widgetTitle: 'AI Денежная Волна 2030',
         widgetSubtitle: 'Люди уже зарабатывают с AI',
         widgetStat1: 'Начало: 2024',
         widgetStat2: 'Цель: 2030',
@@ -918,20 +930,17 @@ async function callAnthropic(messages, system) {
         },
         body: JSON.stringify({
             model: 'claude-3-5-sonnet-20241022',
-            max_tokens: 8192,
+            max_tokens: 2048,
             system: system,
             messages: messages
         })
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
-        console.error('API Error:', data);
-        throw new Error(data.error?.message || `API Error: ${response.status}`);
+        throw new Error(`API Error: ${response.status}`);
     }
 
-    return data;
+    return await response.json();
 }
 
 async function initModule(moduleId) {
@@ -955,13 +964,7 @@ async function initModule(moduleId) {
     } catch (e) {
         removeTyping();
         console.error('AI Error:', e);
-        let errorMsg = '⚠️ API Error: ' + e.message + '<br><br>';
-        if (e.message.includes('model:')) {
-            errorMsg += 'The AI model is not available. This might be a temporary issue with the API.<br>';
-        } else if (e.message.includes('401') || e.message.includes('authentication')) {
-            errorMsg += 'Your API key appears to be invalid or expired.<br>';
-        }
-        errorMsg += '<button onclick="resetApiKey()" style="margin-top:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>';
+        const errorMsg = '⚠️ Connection error. Please check your API key. <button onclick="resetApiKey()" style="margin-left:10px;padding:8px 16px;background:#dc2626;color:#fff;border:none;border-radius:8px;cursor:pointer;font-weight:600;">Reset API Key</button>';
         addBot(errorMsg);
     }
 }
@@ -1209,108 +1212,59 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════
-// MARKETING WIDGET
+// AI BULLRUN WIDGET
 // ═══════════════════════════════════════════════════════════════
-function updateMarketingWidget() {
-    const widget = document.getElementById('marketingWidget');
+function updateBullrun() {
+    const widget = document.getElementById('bullrunWidget');
 
-    if (S.widgetClosed) {
+    if (S.bullrunClosed) {
         widget.style.display = 'none';
         return;
     }
 
-    // Show widget
     widget.style.display = 'block';
 
     const total = 100000;
-    const percentage = (S.marketingCount / total) * 100;
+    const percentage = (S.bullrunCount / total) * 100;
 
-    document.getElementById('progressGlow').style.width = percentage + '%';
-    document.getElementById('progressText').textContent =
-        S.marketingCount.toLocaleString() + ' / ' + total.toLocaleString();
-
-    // Update translations
-    document.getElementById('widgetTitle').textContent = t('widgetTitle');
-    document.getElementById('widgetSubtitle').textContent = t('widgetSubtitle');
-    document.getElementById('widgetStat1').textContent = t('widgetStat1');
-    document.getElementById('widgetStat2').textContent = t('widgetStat2');
+    document.getElementById('bullrunBar').style.width = percentage + '%';
+    document.getElementById('bullrunText').textContent =
+        S.bullrunCount.toLocaleString() + ' / ' + total.toLocaleString();
 }
 
-function incrementMarketingCount() {
-    S.marketingCount += Math.floor(Math.random() * 3) + 1; // Random 1-3
-    localStorage.setItem('red_ai_marketing_count', S.marketingCount);
-    updateMarketingWidget();
+function incrementBullrun() {
+    S.bullrunCount += Math.floor(Math.random() * 3) + 1;
+    localStorage.setItem('red_ai_bullrun_count', S.bullrunCount);
+    updateBullrun();
 }
 
-function closeWidget() {
-    S.widgetClosed = true;
-    localStorage.setItem('red_ai_widget_closed', 'true');
-    document.getElementById('marketingWidget').style.display = 'none';
+function closeBullrun() {
+    S.bullrunClosed = true;
+    localStorage.setItem('red_ai_bullrun_closed', 'true');
+    document.getElementById('bullrunWidget').style.display = 'none';
 }
 
-// ═══════════════════════════════════════════════════════════════
-// NOTIFICATION SYSTEM
-// ═══════════════════════════════════════════════════════════════
-function showNotification() {
-    const container = document.getElementById('notificationContainer');
-
-    // Remove existing notification if any
-    const existing = container.querySelector('.notification');
-    if (existing) {
-        existing.remove();
-    }
-
-    const notif = document.createElement('div');
-    notif.className = 'notification';
-    notif.innerHTML = `
-        <div class="notification-icon">💰</div>
-        <div class="notification-content">
-            <div class="notification-title">${t('notifTitle')}</div>
-            <div class="notification-text">${t('notifText')}</div>
-        </div>
-        <button class="notification-close" onclick="closeNotification()">×</button>
-    `;
-
-    container.appendChild(notif);
-
-    // Trigger animation
-    setTimeout(() => notif.classList.add('show'), 10);
-
-    // Increment counter
-    incrementMarketingCount();
-}
-
-function closeNotification() {
-    const notif = document.querySelector('.notification');
-    if (notif) {
-        notif.classList.remove('show');
-        setTimeout(() => notif.remove(), 400);
-    }
-}
-
-// Start notification interval (every 2-5 minutes = 120000-300000ms)
-function startNotificationInterval() {
+// Auto-increment every 2-5 minutes
+function startBullrunInterval() {
     function scheduleNext() {
-        const delay = Math.random() * (300000 - 120000) + 120000; // 2-5 min
+        const delay = Math.random() * (300000 - 120000) + 120000;
         setTimeout(() => {
-            showNotification();
+            incrementBullrun();
             scheduleNext();
         }, delay);
     }
-
-    // First notification after 30 seconds
     setTimeout(() => {
-        showNotification();
+        incrementBullrun();
         scheduleNext();
     }, 30000);
 }
 
-// Initialize marketing features when app starts
+// Initialize bullrun widget when app starts
 const originalStartApp = startApp;
 startApp = function() {
     originalStartApp();
-    updateMarketingWidget();
-    startNotificationInterval();
+    updateBullrun();
+    startBullrunInterval();
 };
 </script>
 </body>
