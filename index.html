@@ -1515,21 +1515,11 @@ function resetEntireCourse() {
         return;
     }
 
-    // Clear all progress
-    S.completedModules = [];
-    S.conversation = [];
-    S.profile = {};
-    S.apiKey = null;
-
-    // Clear localStorage completely
-    localStorage.removeItem('red_ai_completed');
-    localStorage.removeItem('red_ai_profile');
-    localStorage.removeItem('red_ai_api_key');
-    localStorage.removeItem('red_ai_bullrun_count');
-    localStorage.removeItem('red_ai_bullrun_closed');
+    // Clear localStorage completely FIRST
+    localStorage.clear();
 
     // Reload page to start fresh (will show language + API key screen)
-    location.reload();
+    window.location.href = window.location.href.split('?')[0];
 }
 </script>
 </body>
