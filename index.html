@@ -603,6 +603,14 @@ function resetApiKey() {
 }
 
 function startApp() {
+    // CRITICAL: Never start app without API key
+    if (!S.apiKey || !S.apiKey.startsWith('sk-ant-')) {
+        console.error('Cannot start app without valid API key');
+        document.getElementById('apiOv').classList.remove('hid');
+        document.getElementById('app').style.display = 'none';
+        return;
+    }
+
     document.getElementById('apiOv').classList.add('hid');
     document.getElementById('app').style.display = 'grid';
     renderModuleList();
@@ -1222,6 +1230,14 @@ if (saved) {
     try {
         S.completedModules = JSON.parse(saved);
     } catch (e) {}
+}
+
+// CRITICAL: Check if API key exists on page load
+// If no API key, user MUST see language + API key screens
+if (!S.apiKey) {
+    console.log('No API key found - user must enter one');
+    // Make sure API overlay is ready to show after language selection
+    document.getElementById('app').style.display = 'none';
 }
 
 // ═══════════════════════════════════════════════════════════════
